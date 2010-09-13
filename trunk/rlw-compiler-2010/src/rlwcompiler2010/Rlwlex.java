@@ -36,13 +36,16 @@ public class Rlwlex {
         s0 = new State(null);
         State s1 = new State(new KeywordTokenizer(this)); //representa Validacion de KeyWords
         State s2 = new State(new IdTokenizer(this));  //representa Validacion de ID
-        State s3 = new State(new IntTokenizer(this));
+        State s3 = new State(new IntTokenizer(this)); //representa Validacion de Constante Integer
+
+
         
         //un caracter
         String regChars = "[a-zA-Z]";
         String regNum = "[0-9]";
         
         s0.addTrans(regChars, s1);
+        s0.addTrans(regNum,s3);
 
         s1.addTrans(regChars, s1);
         s1.addTrans(regNum, s2);
