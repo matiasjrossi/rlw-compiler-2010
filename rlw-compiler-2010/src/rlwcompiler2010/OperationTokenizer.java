@@ -16,9 +16,8 @@ public class OperationTokenizer extends AVTokenizer {
     }
 
     public Token build(String s) {
-        throw new UnsupportedOperationException("Not supported yet.");
-
-        
+        if (s.matches("+"))
+            return new Token(s, Token.Tokens.OP_ARITM)
     }
 
 }
