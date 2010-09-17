@@ -19,21 +19,21 @@ class SingleTokenizer extends AVTokenizer {
         //ESTO ESTA MAL!!!
         // REMPLAZAR LAS STRINGS (que es lo que tiene que reconocer)
         // CON LA EXPRESION REGULAR QUE LA RECONOCE!!!!!!!!!
-        if (s.matches("{"))
+        if (s.matches("\\{"))
             return new Token(s, Token.Tokens.O_BRACKET);
-        else if (s.matches("}"))
+        else if (s.matches("\\}"))
             return new Token(s, Token.Tokens.C_BRACKET);
-        else if (s.matches("("))
+        else if (s.matches("\\("))
             return new Token(s, Token.Tokens.O_PARENT);
-        else if (s.matches(")"))
+        else if (s.matches("\\)"))
             return new Token(s, Token.Tokens.C_PARENT);
         else if (s.matches(","))
             return new Token(s, Token.Tokens.COLON);
         else if (s.matches(";"))
             return new Token(s, Token.Tokens.SEMICOLON);
-        else if (s.matches("*"))
+        else if (s.matches("\\*"))
             return new Token(s, Token.Tokens.MULT);
-        else if (s.matches("+"))
+        else if (s.matches("\\+"))
             return new Token(s, Token.Tokens.SUM);
         else if (s.matches("-"))
             return new Token(s, Token.Tokens.SUB);

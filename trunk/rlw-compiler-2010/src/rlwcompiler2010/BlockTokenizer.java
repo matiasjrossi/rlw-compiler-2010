@@ -16,13 +16,13 @@ public class BlockTokenizer extends AVTokenizer{
     }
 
     public Token build(String s) {
-        if (s.matches("{"))
+        if (s.matches("\\{"))
             return new Token(s, Token.Tokens.O_BRACKET);
-        else if (s.matches("}"))
+        else if (s.matches("\\}"))
             return new Token(s, Token.Tokens.C_BRACKET);
-        else if (s.matches("("))
+        else if (s.matches("\\("))
             return new Token(s, Token.Tokens.O_PARENT);
-        else if (s.matches(")"))
+        else if (s.matches("\\)"))
             return new Token(s, Token.Tokens.C_PARENT);
         else if (s.matches(","))
             return new Token(s, Token.Tokens.COLON);

@@ -15,20 +15,18 @@ class LogicCompTokenizer extends AVTokenizer {
          super(lex);
     }
     
-    public Token build(String s) { //ESTO ESTA MAL!!!
-        // REMPLAZAR LAS STRINGS (que es lo que tiene que reconocer)
-        // CON LA EXPRESION REGULAR QUE LA RECONOCE!!!!!!!!!
-        if (s.matches("<"))
+    public Token build(String s) {
+        if (s.matches("\\<"))
             return new Token(s, Token.Tokens.LT);
-        else if (s.matches(">"))
+        else if (s.matches("\\>"))
             return new Token(s, Token.Tokens.GT);
         else if (s.matches("="))
             return new Token(s, Token.Tokens.EQUAL);
-        else if (s.matches(">="))
+        else if (s.matches("\\>="))
             return new Token(s, Token.Tokens.GT_EQUAL);
-        else if (s.matches("<>"))
+        else if (s.matches("\\<\\>"))
             return new Token(s, Token.Tokens.DISTINCT);
-        else if (s.matches("<="))
+        else if (s.matches("\\<="))
             return new Token(s, Token.Tokens.LT_EQUAL);
         return null;
     }
