@@ -17,7 +17,8 @@ public class Token {
         SUM,SUB,MULT,DIV, //Arithmetic Operators
         GT_EQUAL,LT_EQUAL,GT,LT, EQUAL, DISTINCT, //RelationShip Operators
         COMMENT,SEMICOLON,COLON,O_PARENT,C_PARENT,O_BRACKET,C_BRACKET
-    }
+        //no aregados al diccionario abajo
+    ,   ASIGN}
 
     private Tokens token;
     private String symbol;

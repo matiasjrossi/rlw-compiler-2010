@@ -21,7 +21,8 @@ public class KeywordTokenizer extends AVTokenizer{
 
     
     public Token build(String s) {
-        s = s.toLowerCase();
+//      s = s.toLowerCase();
+//	sin lower, si pone whILe ajoderse
         if ( dicc.containsKey(s) )
             return new Token(s,Token.Tokens.KEYWORD);
         else
