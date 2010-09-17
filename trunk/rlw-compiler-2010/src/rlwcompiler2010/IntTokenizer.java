@@ -9,6 +9,7 @@ package rlwcompiler2010;
  *
  * @author cristian
  */
+
 public class IntTokenizer extends AVTokenizer {
 
     public Token build(String s) {
