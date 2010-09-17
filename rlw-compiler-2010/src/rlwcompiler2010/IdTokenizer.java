@@ -15,7 +15,7 @@ public class IdTokenizer extends AVTokenizer {
 
     public Token build(String s) {
         //Check for charcter start and lenght
-        String regex = "^[a-zA-Z].*";
+        String regex = "^[a-zA-Z][a-zA-Z0-9]*";
         if (s.matches(regex)) {
             if (!s.isEmpty() && s.length() < 15) {
                 return new Token(s, Token.Tokens.ID);

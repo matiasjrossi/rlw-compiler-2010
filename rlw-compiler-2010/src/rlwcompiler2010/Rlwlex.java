@@ -75,21 +75,21 @@ public class Rlwlex {
 
         String schar = "[a-zA-Z]",
                 dig = "[0-9]",
-                goat = ".",
-                spa = " ",
+                goat = "\\.",
+                spa = "\\s",
                 exp = "E",
                 mdd = ":",
-                nnl = "not new line",
-                nl = "new line",
-                bl = "blancos... tab espacio",
-                ms = "-",
-                dq = "\"",
-                ndq = "!\"",
+                nnl = "[^(\\r\\n|\\n)]",
+                nl = "(\\r\\n|\\n)",
+                bl = "(\\s|\\t|\\r\\n|\\n)",
+                ms = "^\\-$",
+                dq = "[\"]",
+                ndq = "[^\"]",
                 sb = "/",
-                cg = ">",
-                cl = "<",
+                cg = "\\>",
+                cl = "\\<",
                 ce = "=",
-                sg = "* + - ; , ( ) { }";
+                sg = "(\\*|\\+|-|;|,|\\(|\\)|\\{|\\})";
 
         s0.addTrans(schar, kw);
         s0.addTrans(dig, integer);
@@ -170,7 +170,7 @@ public class Rlwlex {
                 // el char actual es el que no valida con el estado acutal -> proximo token
                 strip = String.valueOf(c);
                 // salteo de vacios (solo entre tokens)
-                while (strip.matches("cualquier tipo de blanco")) {
+                while (strip.matches("\\t\\s\\n")) {
                     if (source == null || source.length() <= index) {
                         source = nextLine();
                         index = 0;
