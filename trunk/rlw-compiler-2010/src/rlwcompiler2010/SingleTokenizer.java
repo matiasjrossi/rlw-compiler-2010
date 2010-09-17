@@ -16,9 +16,6 @@ class SingleTokenizer extends AVTokenizer {
     }
 
     public Token build(String s) {
-        //ESTO ESTA MAL!!!
-        // REMPLAZAR LAS STRINGS (que es lo que tiene que reconocer)
-        // CON LA EXPRESION REGULAR QUE LA RECONOCE!!!!!!!!!
         if (s.matches("\\{"))
             return new Token(s, Token.Tokens.O_BRACKET);
         else if (s.matches("\\}"))
