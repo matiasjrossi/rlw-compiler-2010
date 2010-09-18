@@ -157,10 +157,11 @@ public class Rlwlex {
             s = br.readLine();
             if (s == null) {
                 fr.close();
-            } else {
+                return s;
+            }
                 l++;
                 s += "\n";
-            }
+           
         } catch (Exception e) {
     //        e.printStackTrace();
         }
