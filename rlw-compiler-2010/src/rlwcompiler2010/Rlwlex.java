@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class Rlwlex {
 
-    private int l = 1; // current line
+    private int l = 0; // current line
     private int index = 0; // position src file
     private String strip = ""; // readed chars "buffer"
     private String source; // src ln (from src file)
@@ -114,6 +114,7 @@ public class Rlwlex {
         start_asign.addTrans(ms, end_asign); // :-
 
         kw.addTrans(dig, id);
+
         kw.addTrans(schar, kw);
         id.addTrans(schar, id);
         id.addTrans(dig, id);
@@ -139,6 +140,7 @@ public class Rlwlex {
             if (s == null) {
                 fr.close();
             } else {
+                l++;
                 s += "\n";
             }
         } catch (Exception e) {
@@ -192,9 +194,6 @@ public class Rlwlex {
                     state = s0;
                 }
             }
-            //TODO
-            //if(String.valueOf(c).matches(nl))
-            // l++;
         }
         return t;
     }
@@ -214,7 +213,7 @@ public class Rlwlex {
     }
 
     static public void main(String[] args) throws FileNotFoundException {
-        test2();
+        
     }
 
     static private void test() {
