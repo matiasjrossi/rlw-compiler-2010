@@ -107,6 +107,7 @@ public class Rlwlex {
         s0.addTrans(dq, textstrip);
 
         textstrip.addTrans(ndq, textstrip);
+        
         textstrip.addTrans(dq, tsend);
         start_div.addTrans(sb, comment);//doble barra ->comentario
         comment.addTrans(nnl, comment);
