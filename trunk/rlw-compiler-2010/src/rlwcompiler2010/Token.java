@@ -16,7 +16,8 @@ public class Token {
         ID,CONST_INT,CONST_REAL,KEYWORD,
         SUM,SUB,MULT,DIV, //Arithmetic Operators
         GT_EQUAL,LT_EQUAL,GT,LT, EQUAL, DISTINCT, //RelationShip Operators
-        COMMENT,SEMICOLON,COLON,O_PARENT,C_PARENT,O_BRACKET,C_BRACKET,ASIGN}
+        COMMENT,SEMICOLON,COLON,O_PARENT,C_PARENT,O_BRACKET,C_BRACKET,
+        ASIGN,TEXT}
 
     private Tokens token;
     private String symbol;
@@ -31,7 +32,7 @@ public class Token {
     }
 
     public Token(String s, Tokens t) {
-        symbol = s;
+        symbol = s.trim();
         token = t;
         dicc.put(Tokens.ID, "ID");
         dicc.put(Tokens.CONST_INT, "CONST_INT");
@@ -59,5 +60,6 @@ public class Token {
         dicc.put(Tokens.C_BRACKET, "C_BRACKET");
 
         dicc.put(Tokens.ASIGN, "ASIGN");
+        dicc.put(Tokens.TEXT, "TEXT");
     }
 }

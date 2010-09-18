@@ -13,7 +13,8 @@ package rlwcompiler2010;
 public class IntTokenizer extends AVTokenizer {
     public static final int MAX_VALUE = (int) Math.pow(2, 15)-1;
     public static final int MIN_VALUE = (int) -Math.pow(2, 15);
-    public Token build(String s) {
+    public Token build(String ss) {
+        String s = ss.trim();
         try {
             Integer i = new Integer(s);
             //Check Bounds - 2^15 < x < 2^15 - 1
