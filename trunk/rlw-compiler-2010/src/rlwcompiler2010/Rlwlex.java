@@ -155,7 +155,7 @@ public class Rlwlex {
                 source = nextLine();
                 index = 0;
                 if (source == null) {
-                    System.out.println("CORTE DE EMERGENCIA SIN SOURCE strip=" + strip);
+                    //Corte de emergencia
                     t = makeToken(strip);
                     strip = "";
                     return t;
@@ -262,8 +262,6 @@ public class Rlwlex {
                 //              e.printStackTrace();
             }
         } while (t != null);
-
-        System.out.println("ACABE");
 
         for(Token t2 : lex.tokenStrip)
             System.out.println("("+t2.get()+")"+t2.getString());
