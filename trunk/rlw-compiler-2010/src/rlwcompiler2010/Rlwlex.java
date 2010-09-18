@@ -49,7 +49,7 @@ public class Rlwlex {
         rct.add(kwt);
         rct.add(idt);
 
-        State kw = new State(kwt), //representa Validacion de KeyWords
+        State kw = new State(rct), //representa Validacion de KeyWords
                 id = new State(idt), //representa Validacion de ID
                 integer = new State(it), //representa Validacion de Constante Integer
                 start_div = new State(div),
@@ -118,7 +118,6 @@ public class Rlwlex {
         id.addTrans(schar, id);
         id.addTrans(dig, id);
 
-
         // lo referido al float es altamente dudoso
         integer.addTrans(dig, integer);
         integer.addTrans(exp, floatexp);
@@ -139,9 +138,11 @@ public class Rlwlex {
             s = br.readLine();
             if (s == null) {
                 fr.close();
+            } else {
+                s += "\n";
             }
         } catch (Exception e) {
-            e.printStackTrace();
+    //        e.printStackTrace();
         }
         return s;
     }
@@ -154,8 +155,10 @@ public class Rlwlex {
                 source = nextLine();
                 index = 0;
                 if (source == null) {
-                    //
-                    return makeToken(strip);
+                    System.out.println("CORTE DE EMERGENCIA SIN SOURCE strip=" + strip);
+                    t = makeToken(strip);
+                    strip = "";
+                    return t;
                 }
             }
             char c = source.charAt(index++);
@@ -170,19 +173,24 @@ public class Rlwlex {
                 // el char actual es el que no valida con el estado acutal -> proximo token
                 strip = String.valueOf(c);
                 // salteo de vacios (solo entre tokens)
-                while (strip.matches("\\t\\s\\n")) {
+                while (strip.matches("(\\t|\\s|\\n)")) {
                     if (source == null || source.length() <= index) {
                         source = nextLine();
                         index = 0;
                         if (source == null) {
-
-                            return makeToken(strip);
+                            return t;
                         }
                     }
                     c = source.charAt(index++);
                     strip = String.valueOf(c);
                 }
+                //salta caracteres fallidos ;)
                 state = s0.next(c);
+                if (state == null) {
+                    log("ERROR: token no reconocido " + c);
+                    strip = "";
+                    state = s0;
+                }
             }
             //TODO
             //if(String.valueOf(c).matches(nl))
@@ -206,9 +214,8 @@ public class Rlwlex {
     }
 
     static public void main(String[] args) throws FileNotFoundException {
-        test();
+        test2();
     }
-
 
     static private void test() {
         // SI TENEMOS PROBLEMAS CON LOS FIN DE LINEA TENEMOS PROBLEMAS SERIOS
@@ -221,61 +228,48 @@ public class Rlwlex {
         lex.log("probando con pito.pt!");
 
         String s = "";
-        int c=0;
+        int c = 0;
         do {
             s = lex.nextLine();
-            System.out.println(s+(s!=null&&s.endsWith("\n")?" "
-                    +" ("+(++c)+","+lex.l+")":""));
+
+            if (s != null && s.endsWith("\n")) {
+                System.out.println("con n");
+
+            }
+            if (s != null && s.endsWith("\r\n")) {
+                System.out.println("con r");
+                //   System.out.println(s + (s != null && s.endsWith("\n") ? " "
+                //           + " (" + (++c) + "," + lex.l + ")" : ""));
+                
+            }
         } while (s != null);
 
     }
 
-    static private void test2(){
-       Token t = null;
-
-        while (t == null){
+    static private void test2() {
+        Token t = null;
         Rlwlex lex = null;
         try {
             lex = new Rlwlex("pito.pt");
         } catch (Exception ex) {
             Logger.getLogger(Rlwlex.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        String source = lex.nextLine();
-        String strip = "";
-        int  index = 0;
-            char c = source.charAt(index++);
-            State ns = lex.state.next(c);
-
-            if (ns != null) { // si tengo transicion, todo va bien
-                System.out.println(lex.state!=ns?"CAMBIO DE ESTADO por "+c:"SEGUIMOS "+strip);
-                strip += c;
-                lex.state = ns;
-            } else {// si no tengo prox estado es final (valido-ERROR)
-                t = lex.makeToken(strip);
-                System.out.println(t==null?"TOKEN ERRONEO con "+strip:"TOKEN LISTO "+t);
-
-                //corregir index y strip pa que salga andando
-                // el char actual es el que no valida con el estado acutal -> proximo token
-                strip = String.valueOf(c);
-                // salteo de vacios (solo entre tokens)
-                while (strip.matches("cualquier tipo de blanco")) {
-                    if (source == null || source.length() <= index) {
-                        source = lex.nextLine();
-                        index = 0;
-                        if (source == null) {
-                            System.out.println("Nos quedamos sin testo, filazando prueba");
-                            return;
-                        }
-                    }
-                    c = source.charAt(index++);
-                    strip = String.valueOf(c);
-                }
-                lex.state = lex.s0.next(c);
+        do {
+            try {
+                t = lex.nextToken();
+           //     System.out.println(t.get() + " " + t.getString());
+            } catch (Exception e) {
+                //              e.printStackTrace();
             }
-        }
-    }
+        } while (t != null);
 
+        System.out.println("ACABE");
+
+        for(Token t2 : lex.tokenStrip)
+            System.out.println("("+t2.get()+")"+t2.getString());
+
+
+    }
 
     static private void test3() {
         Rlwlex lex = null;

@@ -25,8 +25,8 @@ public class KeywordTokenizer extends AVTokenizer{
 //	sin lower, si pone whILe ajoderse
         if ( dicc.containsKey(s) )
             return new Token(s,Token.Tokens.KEYWORD);
-        else
-            notify("ERROR: Keyword No reconocida: <" + s + ">.");
+      //  else
+     //       notify("ERROR: Keyword No reconocida: <" + s + ">.");
         return null;
     }
 

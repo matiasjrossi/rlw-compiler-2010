@@ -17,7 +17,7 @@ public class CommentTokenizer extends AVTokenizer{
 
     
     public Token build(String s) {
-        if (s.matches("//.*?(\\r\\n?|\\n)"))
+        if(s.matches("//.*"))//?(\\r\\n?|\\n)
             return new Token(s, Token.Tokens.COMMENT);
         return null;
     }
