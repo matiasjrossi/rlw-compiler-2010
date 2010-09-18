@@ -37,14 +37,15 @@ public class Rlwlex {
 
         //set the automata
         s0 = new State(null);
-        ITokenizer kwt = new KeywordTokenizer(this);
-        ITokenizer idt = new IdTokenizer(this);
-        ITokenizer it = new IntTokenizer(this);
-        ITokenizer div = new DivisionTokenizer(this);
-        ITokenizer lct = new LogicCompTokenizer(this);
-        ITokenizer sngt = new SingleTokenizer(this);
-        ITokenizer asgt = new AsignTokenizer(this);
-        ITokenizer sft = new FloatTonkenizer(this);
+        ITokenizer kwt = new KeywordTokenizer(this),
+                idt = new IdTokenizer(this),
+                it = new IntTokenizer(this),
+                div = new DivisionTokenizer(this),
+                lct = new LogicCompTokenizer(this),
+                sngt = new SingleTokenizer(this),
+                asgt = new AsignTokenizer(this),
+                sft = new FloatTonkenizer(this),
+                st = new StringTokenizer(this);
         RCTokenizer rct = new RCTokenizer();
         rct.add(kwt);
         rct.add(idt);
@@ -58,20 +59,20 @@ public class Rlwlex {
                 com_equal = new State(lct),
                 singles = new State(sngt),
                 end_asign = new State(asgt),//FINAL
+                start_asign = new State(null),//null tokenizer estado intermedio asign
+                tsend = new State(st),//HACE FALTA EL TOKENIZER!!!!!!!
+                textstrip = new State(null),//null token hasta el "
 
                 comment = new State(null),// null tokenaizer los comentarios se ignoran
-                start_asign = new State(null),//null tokenizer estado intermedio asign
-                floating = new State(null), // null tokenize intermedio del float
-                floatexp = new State(null),// null tokenizer obliga a tener exp desp del E y detec sign
-                textstrip = new State(null),// nul tokenizer estado intermedio hasta "
-
-                spif = new State(null),//null tokenizer space post int
-                spef = new State(null),//null tokenizer space post exp (E)
-                // estos dos ultimos todavia no se usan
-                // son los espacios para float const con E
-                // ahora los float son 2E4 3.5E8
-
-                sfloatexp = new State(sft);
+                
+                floating = new State(sft),
+                pmsfloatexp = new State(null),
+                post_intspace = new State(it),
+                post_floatspace = new State(sft),
+                pre_floatexp = new State(null),// null? para "2.3 E "
+                floatexp = new State(sft);// es el pre E deberia poder construir Float o Int
+// null tokenizer obliga a tener exp desp del E y detec sign
+             
 
         String schar = "[a-zA-Z]",
                 dig = "[0-9]",
@@ -106,6 +107,7 @@ public class Rlwlex {
         s0.addTrans(dq, textstrip);
 
         textstrip.addTrans(ndq, textstrip);
+        textstrip.addTrans(dq, tsend);
         start_div.addTrans(sb, comment);//doble barra ->comentario
         comment.addTrans(nnl, comment);
 
@@ -121,13 +123,28 @@ public class Rlwlex {
 
         // lo referido al float es altamente dudoso
         integer.addTrans(dig, integer);
-        integer.addTrans(exp, floatexp);
-        integer.addTrans(goat, floating);
+        integer.addTrans(goat,floating);
+        integer.addTrans(exp, pre_floatexp);
+        integer.addTrans(spa, post_intspace);
+        // floating point
         floating.addTrans(dig, floating);
-        floating.addTrans(exp, floatexp);
-        floatexp.addTrans(dig, sfloatexp);
-        floatexp.addTrans(ms, sfloatexp);
-        sfloatexp.addTrans(dig, sfloatexp);
+        floating.addTrans(exp, pre_floatexp);
+        floating.addTrans(spa, post_floatspace);
+        //ilimitaed spaces before E
+        post_floatspace.addTrans(spa,post_floatspace);
+        post_floatspace.addTrans(exp,pre_floatexp);
+        //ilimitaed spaces before E int tokenizer
+        post_intspace.addTrans(spa,post_intspace);
+        post_intspace.addTrans(exp,pre_floatexp);
+        //spa dig sign -> post E space finishes
+        pre_floatexp.addTrans(spa,pre_floatexp);
+        pre_floatexp.addTrans(ms,pmsfloatexp);
+        pre_floatexp.addTrans(dig,floatexp);
+        //postsign space
+        pmsfloatexp.addTrans(spa, pmsfloatexp);
+        pmsfloatexp.addTrans(dig,floatexp);
+        //exp
+        floatexp.addTrans(dig,floatexp);
 
 
         state = s0;
@@ -213,7 +230,7 @@ public class Rlwlex {
     }
 
     static public void main(String[] args) throws FileNotFoundException {
-        
+        test2();
     }
 
     static private void test() {
