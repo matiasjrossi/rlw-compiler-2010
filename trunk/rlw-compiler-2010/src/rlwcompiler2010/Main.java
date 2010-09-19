@@ -16,14 +16,7 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-
-        String s = new String("\\n");
         
-        if (s.matches("")) {
-            System.out.println("si!");
-        } else {
-            System.out.println("no!");
-        }
     }
 
 }
