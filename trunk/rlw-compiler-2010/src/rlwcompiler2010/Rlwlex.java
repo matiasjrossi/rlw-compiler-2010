@@ -194,7 +194,7 @@ public class Rlwlex {
                 // el char actual es el que no valida con el estado acutal -> proximo token
                 strip = String.valueOf(c);
                 // salteo de vacios (solo entre tokens)
-                while (strip.matches("[ \\t\\n]")) {
+                while (strip.matches("[ \\t\\n]*")) {
                     if (source == null || source.length() <= index) {
                         source = nextLine();
                         index = 0;
