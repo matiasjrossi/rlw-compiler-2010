@@ -44,7 +44,7 @@ public class Rlwlex {
                 lct = new LogicCompTokenizer(this),
                 sngt = new SingleTokenizer(this),
                 asgt = new AsignTokenizer(this),
-                sft = new FloatTonkenizer(this),
+                sft = new FloatTokenizer(this),
                 st = new StringTokenizer(this);
         RCTokenizer rct = new RCTokenizer();
         rct.add(kwt);
@@ -77,7 +77,7 @@ public class Rlwlex {
         String schar = "[a-zA-Z]",
                 dig = "[0-9]",
                 goat = "\\.",
-                spa = "\\s",
+                spa = "[ \\t]",
                 exp = "E",
                 mdd = ":",
                 nnl = "[^(\\r\\n|\\n)]",
@@ -194,7 +194,7 @@ public class Rlwlex {
                 // el char actual es el que no valida con el estado acutal -> proximo token
                 strip = String.valueOf(c);
                 // salteo de vacios (solo entre tokens)
-                while (strip.matches("(\\t|\\s|\\n)")) {
+                while (strip.matches("[ \\t\\n]")) {
                     if (source == null || source.length() <= index) {
                         source = nextLine();
                         index = 0;
