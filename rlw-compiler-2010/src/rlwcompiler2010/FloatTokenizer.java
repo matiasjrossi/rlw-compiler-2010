@@ -8,20 +8,21 @@ package rlwcompiler2010;
  *
  * @author je
  */
-class FloatTonkenizer extends AVTokenizer {
+class FloatTokenizer extends AVTokenizer {
 
     public static final float MAX_VALUE = (float) (1.17549435 * Math.pow(10, 38));
     public static final float MIN_VALUE = (float) (3.40282347 * Math.pow(10, -38));
 
-    public FloatTonkenizer(Rlwlex lex) {
+    public FloatTokenizer(Rlwlex lex) {
         super(lex);
     }
 
     public Token build(String ss) {
-        String regex = "^([0-9]+[^.]|\\.[0-9]+|[0-9]+\\.+[0-9]+)\\s*(E-?[0-9]+)*";
-        String s = ss.replace(" ", "");
+        String regex = "^([0-9]+[^.]|\\.[0-9]+|[0-9]+\\.+[0-9]+)[ \\t]*(E[ \\t]*-?[0-9]+)*";
+        
         try {
-            if (s.matches(regex)) {
+            if (ss.matches(regex)) {
+                String s = ss.replace(" ", "");
                 String[] asd = s.split("E");
                 Float base = new Float(asd[0].trim());
                 Integer exp = new Integer(0);
@@ -34,10 +35,10 @@ class FloatTonkenizer extends AVTokenizer {
                 }
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
-        notify("ERROR: Valor fuera de rango para Constante Real: <"+ s + ">.");
+        notify("ERROR: Valor fuera de rango para Constante Real: <"+ ss + ">.");
 
         return null;
     }
