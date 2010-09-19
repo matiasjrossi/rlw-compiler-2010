@@ -59,17 +59,17 @@ public class Rlwlex {
                 com_equal = new State(lct),
                 singles = new State(sngt),
                 end_asign = new State(asgt),//FINAL
-                start_asign = new State(null),//null tokenizer estado intermedio asign
+                start_asign = new State(new TokenErrorInformer(this,"ERROR: se esperaba \"-\" despues de")),//null tokenizer estado intermedio asign
                 tsend = new State(st),//HACE FALTA EL TOKENIZER!!!!!!!
-                textstrip = new State(null),//null token hasta el "
+                textstrip = new State(new TokenErrorInformer(this,"ERROR: cadena de texto incompleta")),//null token hasta el "
 
                 comment = new State(null),// null tokenaizer los comentarios se ignoran
                 
                 floating = new State(sft),
-                pmsfloatexp = new State(null),
+                pmsfloatexp = new State(new TokenErrorInformer(this,"ERROR: secuencia no reconocida, posible CONST_REAL")),
                 post_intspace = new State(it),
                 post_floatspace = new State(sft),
-                pre_floatexp = new State(null),// null? para "2.3 E "
+                pre_floatexp = new State(new TokenErrorInformer(this,"ERROR: secuencia no reconocida, posible CONST_REAL")),// null? para "2.3 E "
                 floatexp = new State(sft);// es el pre E deberia poder construir Float o Int
 // null tokenizer obliga a tener exp desp del E y detec sign
              
@@ -207,7 +207,7 @@ public class Rlwlex {
                 //salta caracteres fallidos ;)
                 state = s0.next(c);
                 if (state == null) {
-                    log("ERROR: token no reconocido " + c);
+                    log("ERROR: token no reconocido " + "<"+ c +">");
                     strip = "";
                     state = s0;
                 }
