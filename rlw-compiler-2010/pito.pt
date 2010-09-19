@@ -58,6 +58,10 @@ E
 .4 E -  5
 4. E - 7
 234E
+2.9 E
+2. E
+.2 E
+.E
 2et
 E8 e8 E 8 234 E8 233E
 pito
@@ -84,8 +88,9 @@ if (c<>d) b:-a*b#
 )))
 [[
 
-*( Otro comentario
+*( Otro coasdmentario
 // otro comentario
 " otra cadena
 ' otra cadena
-}
+}"
+23
