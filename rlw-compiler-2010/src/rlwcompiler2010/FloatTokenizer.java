@@ -10,36 +10,26 @@ package rlwcompiler2010;
  */
 class FloatTokenizer extends AVTokenizer {
 
-    public static final float MAX_VALUE = (float) (1.17549435 * Math.pow(10, 38));
-    public static final float MIN_VALUE = (float) (3.40282347 * Math.pow(10, -38));
+    public static final float MAX_VALUE = (float) (1.17549435E38);
+    public static final float MIN_VALUE = (float) (3.40282347E-38);
 
     public FloatTokenizer(Rlwlex lex) {
         super(lex);
     }
 
     public Token build(String ss) {
-        String regex = "^([0-9]+[^.]|\\.[0-9]+|[0-9]+\\.+[0-9]+)[ \\t]*(E[ \\t]*-?[0-9]+)*";
-        
+        String s = ss.replace(" ", "");
+        String regex = "^([0-9]+\\.*[0-9]*|\\.[0-9]+)(E-?[0-9]+)*";
         try {
-            if (ss.matches(regex)) {
-                String s = ss.replace(" ", "");
-                String[] asd = s.split("E");
-                Float base = new Float(asd[0].trim());
-                Integer exp = new Integer(0);
-                if (asd.length == 2) {
-                    exp = new Integer(asd[1].trim());
-                }
-                Float Num = new Float(Math.abs(base * (float) Math.pow(10, exp)));
+            if (s.matches(regex)) {
+                Float Num = new Float(s);
                 if (MIN_VALUE < Num && Num < MAX_VALUE) {
                     return new Token(ss, Token.Tokens.CONST_REAL);
-                }
+                }                    
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { }
 
         notify("ERROR: Valor fuera de rango para Constante Real: <"+ ss + ">.");
-
         return null;
     }
 }
