@@ -17,23 +17,23 @@ class SingleTokenizer extends AVTokenizer {
 
     public Token build(String s) {
         if (s.matches("\\{"))
-            return new Token(s, Token.Tokens.O_BRACKET);
+            return new Token(s, Symbols.LCURLY);
         else if (s.matches("\\}"))
-            return new Token(s, Token.Tokens.C_BRACKET);
+            return new Token(s, Symbols.RCURLY);
         else if (s.matches("\\("))
-            return new Token(s, Token.Tokens.O_PARENT);
+            return new Token(s, Symbols.LBRACKET);
         else if (s.matches("\\)"))
-            return new Token(s, Token.Tokens.C_PARENT);
+            return new Token(s, Symbols.RBRACKET);
         else if (s.matches(","))
-            return new Token(s, Token.Tokens.COLON);
+            return new Token(s, Symbols.COMMA);
         else if (s.matches(";"))
-            return new Token(s, Token.Tokens.SEMICOLON);
+            return new Token(s, Symbols.SEMICOLON);
         else if (s.matches("\\*"))
-            return new Token(s, Token.Tokens.MULT);
+            return new Token(s, Symbols.TIMES);
         else if (s.matches("\\+"))
-            return new Token(s, Token.Tokens.SUM);
+            return new Token(s, Symbols.PLUS);
         else if (s.matches("-"))
-            return new Token(s, Token.Tokens.SUB);
+            return new Token(s, Symbols.MINUS);
         return null;
     }
     

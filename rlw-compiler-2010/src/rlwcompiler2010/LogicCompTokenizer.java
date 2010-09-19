@@ -16,18 +16,11 @@ class LogicCompTokenizer extends AVTokenizer {
     }
     
     public Token build(String s) {
-        if (s.matches("\\<"))
-            return new Token(s, Token.Tokens.LT);
-        else if (s.matches("\\>"))
-            return new Token(s, Token.Tokens.GT);
-        else if (s.matches("="))
-            return new Token(s, Token.Tokens.EQUAL);
-        else if (s.matches("\\>="))
-            return new Token(s, Token.Tokens.GT_EQUAL);
-        else if (s.matches("\\<\\>"))
-            return new Token(s, Token.Tokens.DISTINCT);
-        else if (s.matches("\\<="))
-            return new Token(s, Token.Tokens.LT_EQUAL);
+
+        String regex = "(\\<|\\>|=|\\>=|\\<=|\\<\\>)";
+
+        if (s.matches(regex))
+            return new Token(s, Symbols.COMPARATOR);
         return null;
     }
 }

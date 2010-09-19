@@ -16,7 +16,7 @@ class StringTokenizer extends AVTokenizer{
     }
 
     public Token build(String s) {
-     return new Token(s,Token.Tokens.TEXT);
+     return new Token(s,Symbols.CONSTANT);
         //   throw new UnsupportedOperationException("Not supported yet.");
     }
 
