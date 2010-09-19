@@ -87,7 +87,7 @@ public class Rlwlex implements Scanner {
                 spa = "[ \\t]",
                 exp = "E",
                 mdd = ":",
-                nnl = "[^(\\r\\n|\\n)]",
+                nnl = "[^\\n]",
                 nl = "(\\r\\n|\\n)",
                 bl = "(\\s|\\t|\\r\\n|\\n)",
                 ms = "^\\-$",
@@ -178,9 +178,13 @@ public class Rlwlex implements Scanner {
     @Override
     public Symbol next_token() throws Exception {
         Token t= nextToken();
-        if (t != null)
+        if (t != null) {
+            System.out.println("Lexer:: Returning token " + t.get());
             return new Symbol(t.get(), t.getString());
-        return null;
+        }
+        System.out.println("Lexer:: Returning END-OF-FILE (hippies)");
+        return new Symbol(Symbols.EOF);
+
     }
 
     protected Token nextToken() {
@@ -296,7 +300,7 @@ public class Rlwlex implements Scanner {
         Token t = null;
         Rlwlex lex = null;
         try {
-            lex = new Rlwlex("test.txt");
+            lex = new Rlwlex("pitogordo.txt");
         } catch (Exception ex) {
             Logger.getLogger(Rlwlex.class.getName()).log(Level.SEVERE, null, ex);
         }
