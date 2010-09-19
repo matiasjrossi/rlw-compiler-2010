@@ -1,0 +1,77 @@
+package rlwcompiler2010;
+
+import java_cup.runtime.*;
+
+/* Terminals */
+terminal ASSIGNMENTSYMBOL, BY, COMMA, COMPARATOR, CONSTANT, ELSE, IDENTIFIER, IF, LBRACKET, LCURLY, MINUS, PLUS, RBRACKET, RCURLY, SEMICOLON, TIMES, TYPE, PRINT, FOR;
+
+/* Non terminals */
+non terminal program, assignment, block, declaration, declarations, expresion, factor, identifiers, predicate, print, scope, selection, statement, statements, term, firstlevelstatement, firstlevelstatements;
+
+
+program ::= declarations firstlevelstatements
+	| firstlevelstatements
+	;
+
+declarations ::= declarations declaration
+	| declaration
+	;
+
+
+declaration ::= TYPE identifiers SEMICOLON
+	;
+
+firstlevelstatements ::= firstlevelstatements firstlevelstatement SEMICOLON
+	| firstlevelstatement
+	;
+
+firstlevelstatement ::= LCURLY scope RCURLY
+	| statement
+	;
+
+scope ::= declarations statements
+	| statements
+	;
+
+statements ::= statements statement SEMICOLON
+	| statement SEMICOLON
+	;
+
+identifiers ::= identifiers COMMA IDENTIFIER
+	| IDENTIFIER
+	;
+
+statement ::= assignment
+	| selection
+	| print
+	;
+
+assignment ::= IDENTIFIER ASSIGNMENTSYMBOL expresion
+	;
+
+expresion ::= expresion PLUS term
+	| expresion MINUS term
+	| term
+	;
+
+term ::= term TIMES factor
+	| term BY factor
+	| factor
+	;
+
+factor ::= IDENTIFIER
+	| CONSTANT
+	;
+
+selection ::= IF LBRACKET predicate RBRACKET block ELSE block
+	;
+
+block ::= statement SEMICOLON
+	| LCURLY statements RCURLY
+	;
+
+predicate ::= expresion COMPARATOR expresion
+	;
+
+print ::= PRINT LBRACKET CONSTANT RBRACKET
+	;

@@ -17,7 +17,7 @@ class AsignTokenizer extends AVTokenizer{
 
     public Token build(String s) {
          if (s.matches(":-"))
-            return new Token(s, Token.Tokens.ASIGN);
+            return new Token(s, Symbols.ASSIGNMENTSYMBOL);
          return null;
 
     }

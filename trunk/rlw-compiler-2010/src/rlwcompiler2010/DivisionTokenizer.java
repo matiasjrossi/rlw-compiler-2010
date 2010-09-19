@@ -17,7 +17,7 @@ class DivisionTokenizer extends AVTokenizer {
 
     public Token build(String s) {
         if (s.matches("/"))
-            return new Token(s, Token.Tokens.DIV);
+            return new Token(s, Symbols.BY);
         return null;
     }
 

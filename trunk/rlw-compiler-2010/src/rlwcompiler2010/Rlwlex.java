@@ -13,11 +13,15 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/* Incluir en el CLASS_PATH a CUP */
+import java_cup.runtime.Scanner;
+import java_cup.runtime.Symbol;
+
 /**
  *
  * @author cristian
  */
-public class Rlwlex {
+public class Rlwlex implements Scanner {
 
     private int l = 0; // current line
     private int index = 0; // position src file
@@ -171,6 +175,14 @@ public class Rlwlex {
         return s;
     }
 
+    @Override
+    public Symbol next_token() throws Exception {
+        Token t= nextToken();
+        if (t != null)
+            return new Symbol(t.get(), t.getString());
+        return null;
+    }
+
     protected Token nextToken() {
         Token t = null;
 
@@ -228,7 +240,7 @@ public class Rlwlex {
         Token t = state.getToken(strip);
         Iterator<String> it;
         if (t != null) {
-            if(t.getID() == Token.Tokens.ID){
+            if(t.get() == Symbols.IDENTIFIER){
                 it=ts.keySet().iterator();
                 String alphaString = null;
                 while(it.hasNext()&&alphaString==null){
@@ -255,11 +267,11 @@ public class Rlwlex {
         // SI TENEMOS PROBLEMAS CON LOS FIN DE LINEA TENEMOS PROBLEMAS SERIOS
         Rlwlex lex = null;
         try {
-            lex = new Rlwlex("pito.pt");
+            lex = new Rlwlex("test.txt");
         } catch (Exception ex) {
             Logger.getLogger(Rlwlex.class.getName()).log(Level.SEVERE, null, ex);
         }
-        lex.log("probando con pito.pt!");
+        lex.log("probando con test.txt!");
 
         String s = "";
         int c = 0;
@@ -284,7 +296,7 @@ public class Rlwlex {
         Token t = null;
         Rlwlex lex = null;
         try {
-            lex = new Rlwlex("pito.pt");
+            lex = new Rlwlex("test.txt");
         } catch (Exception ex) {
             Logger.getLogger(Rlwlex.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -306,11 +318,11 @@ public class Rlwlex {
     static private void test3() {
         Rlwlex lex = null;
         try {
-            lex = new Rlwlex("pito.pt");
+            lex = new Rlwlex("test.txt");
         } catch (Exception ex) {
             Logger.getLogger(Rlwlex.class.getName()).log(Level.SEVERE, null, ex);
         }
-        lex.log("probando con pito.pt!");
+        lex.log("probando con test.txt!");
         Token t = null;
         do {
             t = lex.nextToken();

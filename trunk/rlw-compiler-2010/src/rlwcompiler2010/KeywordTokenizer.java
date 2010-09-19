@@ -13,30 +13,23 @@ import org.xml.sax.ext.LexicalHandler;
  */
 public class KeywordTokenizer extends AVTokenizer {
 
-    private enum Keywords {
-
-        IF, ELSE, PRINT, FLOAT, INT, FOR
-    }
-    private HashMap<String, Keywords> dicc = new HashMap<String, Keywords>();
+    private HashMap<String, Integer> dicc = new HashMap<String, Integer>();
 
     public Token build(String s) {
-//      s = s.toLowerCase();
-//	sin lower, si pone whILe ajoderse
+        //CASE SENSITIVE
         if (dicc.containsKey(s)) {
-            return new Token(s, Token.Tokens.KEYWORD);
+            return new Token(s, dicc.get(s));
         }
-        //  else
-        //       notify("ERROR: Keyword No reconocida: <" + s + ">.");
         return null;
     }
 
     public KeywordTokenizer(Rlwlex lex) {
         super(lex);
-        dicc.put("if", Keywords.IF);
-        dicc.put("else", Keywords.ELSE);
-        dicc.put("print", Keywords.PRINT);
-        dicc.put("float", Keywords.FLOAT);
-        dicc.put("int", Keywords.INT);
-        dicc.put("for", Keywords.FOR);
+        dicc.put("if", Symbols.IF);
+        dicc.put("else", Symbols.ELSE);
+        dicc.put("print", Symbols.PRINT);
+        dicc.put("float", Symbols.TYPE);
+        dicc.put("int", Symbols.TYPE);
+        dicc.put("for", Symbols.FOR);
     }
 }
