@@ -31,6 +31,8 @@ class FloatTokenizer extends AVTokenizer {
 
         if (!s.isEmpty())
             notify("ERROR: Valor fuera de rango para Constante Real: <"+ ss + ">.");
+        if (!s.equals("."))
+            notify("ERROR: Valor fuera de rango para Constante Real: <"+ ss + ">.");
         return null;
     }
 }
