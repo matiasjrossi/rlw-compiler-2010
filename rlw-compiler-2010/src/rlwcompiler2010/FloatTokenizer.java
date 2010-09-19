@@ -19,6 +19,7 @@ class FloatTokenizer extends AVTokenizer {
 
     public Token build(String ss) {
         String s = ss.replace(" ", "");
+        s = s.replace("\t", "");
         String regex = "^([0-9]+\\.*[0-9]*|\\.[0-9]+)(E-?[0-9]+)*";
         try {
             if (s.matches(regex)) {
@@ -28,6 +29,7 @@ class FloatTokenizer extends AVTokenizer {
                 }                    
             }
         } catch (Exception e) { }
+
 
         notify("ERROR: Valor fuera de rango para Constante Real: <"+ ss + ">.");
         return null;
