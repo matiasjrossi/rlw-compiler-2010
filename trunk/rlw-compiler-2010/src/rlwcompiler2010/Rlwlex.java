@@ -73,7 +73,6 @@ public class Rlwlex {
                 floatexp = new State(sft);// es el pre E deberia poder construir Float o Int
 // null tokenizer obliga a tener exp desp del E y detec sign
              
-
         String schar = "[a-zA-Z]",
                 dig = "[0-9]",
                 goat = "\\.",
