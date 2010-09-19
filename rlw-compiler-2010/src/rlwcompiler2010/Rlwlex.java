@@ -7,6 +7,8 @@ package rlwcompiler2010;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,12 +26,14 @@ public class Rlwlex {
     private String filePath;
     private State state; // current state
     private State s0; // initial state
+    private Hashtable<String,SymbolData> ts;
     private Vector<Token> tokenStrip;
     private FileReader fr;
     private BufferedReader br;
 
     Rlwlex(String filePath) throws Exception {
         this.filePath = filePath;
+        this.ts = new Hashtable<String, SymbolData>();
         tokenStrip = new Vector<Token>();
 
         fr = new FileReader(filePath);
@@ -207,7 +211,7 @@ public class Rlwlex {
                 //salta caracteres fallidos ;)
                 state = s0.next(c);
                 if (state == null) {
-                    log("ERROR: token no reconocido " + "<"+ c +">");
+                    log("ERROR: token no reconocido " + c);
                     strip = "";
                     state = s0;
                 }
@@ -222,7 +226,20 @@ public class Rlwlex {
 
     private Token makeToken(String strip) {
         Token t = state.getToken(strip);
+        Iterator<String> it;
         if (t != null) {
+            if(t.getID() == Token.Tokens.ID){
+                it=ts.keySet().iterator();
+                String alphaString = null;
+                while(it.hasNext()&&alphaString==null){
+                    alphaString=it.next();
+                    if(t.matches(alphaString)){
+
+                    }else{
+                        alphaString=null;
+                    }
+                }
+            }
             // buscar en tsimbolo
             //    si no ta agregar
             tokenStrip.add(t);
