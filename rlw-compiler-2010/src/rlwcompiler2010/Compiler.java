@@ -20,7 +20,7 @@ public class Compiler {
         // TODO code application logic here
         try {
             // Build a Scanner
-            Scanner s = new Rlwlex("pitogordo.txt");
+            Scanner s = new Rlwlex("test2.txt");
             System.out.println("Compiler:: Scanner successfully built!");
 
             // Build a Parser using the previously created Scanner
