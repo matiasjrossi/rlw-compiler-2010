@@ -5,7 +5,7 @@ pepe :- 18/pepe;
 
 {
     float pepa;
-    pepa :- 0.5;
+    pepa :- 67-0.5;
 
     print("puto");
 }
