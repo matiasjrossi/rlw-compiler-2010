@@ -21,12 +21,12 @@ declarations ::= declarations declaration {: System.out.println("Parser:: Using 
 declaration ::= TYPE identifiers SEMICOLON {: System.out.println("Parser:: Using rule: declaration ::= TYPE identifiers SEMICOLON"); :}
 	;
 
-firstlevelstatements ::= firstlevelstatements firstlevelstatement SEMICOLON {: System.out.println("Parser:: Using rule: firstlevelstatements ::= firstlevelstatements firstlevelstatement SEMICOLON"); :}
-        | firstlevelstatement SEMICOLON {: System.out.println("Parser:: Using rule: firstlevelstatements ::= firstlevelstatement SEMICOLON"); :}
+firstlevelstatements ::= firstlevelstatements firstlevelstatement {: System.out.println("Parser:: Using rule: firstlevelstatements ::= firstlevelstatements firstlevelstatement"); :}
+        | firstlevelstatement {: System.out.println("Parser:: Using rule: firstlevelstatements ::= firstlevelstatement"); :}
 	;
 
 firstlevelstatement ::= LCURLY scope RCURLY {: System.out.println("Parser:: Using rule: firstlevelstatement ::= LCURLY scope RCURLY"); :}
-        | statement {: System.out.println("Parser:: Using rule: firstlevelstatement ::= statement"); :}
+        | statement SEMICOLON{: System.out.println("Parser:: Using rule: firstlevelstatement ::= statement SEMICOLON"); :}
 	;
 
 scope ::= declarations statements {: System.out.println("Parser:: Using rule: scope ::= declarations statements"); :}
