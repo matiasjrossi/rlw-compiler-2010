@@ -6,7 +6,6 @@ pepe :- 18/pepe;
 {
     float pepa;
     pepa :- 67-0.5;
-
     print("some string");
 }
 
