@@ -1,0 +1,44 @@
+digraph finite_state_machine {
+	rankdir=LR;
+	node [shape = doublecircle,fixedsize=true,width=2]; KW ID INT FLOAT FLOAT_EXP END_ASIGN START_DIV COM_GREAT COM_LESS COM_EQUAL SINGLES TSEND;
+	node [shape=circle,fixedsize=true,width=2];
+	INIT -> KW [ label = "[a-zA-Z]" ];
+	INIT -> INT [ label = "[0-9]" ];
+	INIT -> FLOAT [ label = "." ];
+	INIT -> START_ASIGN [ label = ":" ];
+	INIT -> START_DIV [ label = "/"];
+	INIT -> COM_GREAT [ label =">" ];
+	INIT -> COM_LESS [ label ="<" ];
+	INIT -> COM_EQUAL [ label = "=" ];
+	INIT -> SINGLES [ label= "* + - ; , ( ) { }" ];
+	INIT -> TEXT_STRIP [ label = "\"" ];
+	TEXT_STRIP -> TEXT_STRIP [ label = "NOT(\")" ];
+	TEXT_STRIP -> TSEND [ label = "\"" ];
+	START_DIV -> COMMENT [ label = "/" ];
+	COMMENT -> COMMENT [ label = "NOT(\\n)" ];
+	COM_LESS -> COM_EQUAL [ label = "=" ];
+	COM_GREAT -> COM_EQUAL [ label = "=" ];
+	START_ASIGN -> END_ASIGN [ label = "-" ];
+	KW -> ID [ label = "[0-9]" ];
+	KW -> KW [ label = "[a-zA-Z]" ];
+	ID -> ID [ label = "[a-zA-Z0-9]" ];
+	INT -> INT [ label = "[0-9]" ];
+	INT -> FLOAT [ label = "." ];
+	INT -> PRE_FLOAT_EXP [ label = "E" ];
+	INT -> POST_INT_ESP [ label = "[ \\t]" ];
+	FLOAT -> FLOAT [ label = "[0-9]" ];
+	FLOAT -> PRE_FLOAT_EXP [ label = "E" ];
+	FLOAT -> POST_FLOAT_ESP [ label = "[ \\t]" ];
+	POST_FLOAT_ESP -> POST_FLOAT_ESP [ label = "[ \\t]" ];
+	POST_FLOAT_ESP -> PRE_FLOAT_EXP [ label = "E" ];
+	POST_INT_ESP -> POST_INT_ESP [ label = "[ \\t]" ];
+	POST_INT_ESP -> PRE_FLOAT_EXP [ label = "E" ];
+	PRE_FLOAT_EXP -> PRE_FLOAT_EXP [ label = "[ \\t]" ];
+	PRE_FLOAT_EXP -> PRE_FLOAT_SIGN [ label = "-" ];
+	PRE_FLOAT_EXP -> FLOAT_EXP [ label = "[0-9]" ];
+	PRE_FLOAT_SIGN -> PRE_FLOAT_SIGN [ label = "[ \\t]" ];
+	PRE_FLOAT_SIGN -> FLOAT_EXP [ label = "[0-9]" ];
+	FLOAT_EXP -> FLOAT_EXP [ label = "[0-9]" ];
+	overlap=false
+	label="Autómata Finito\nAnalizador Léxico"
+}
