@@ -1,0 +1,19 @@
+int pepe;
+
+pepe :- 18/pepe;
+
+
+{
+    float pepa;
+    pepa :- 0.5;
+
+    print("puto");
+}
+
+
+//if(5<7)
+//   pepe :- pepe + 12;
+//else
+  // {
+    //  pepe :- pepe -10;
+   //}
