@@ -183,7 +183,7 @@ public class Rlwlex implements Scanner {
             System.out.println("Lexer:: Returning token " + t.get());
             return new Symbol(t.get(), t.getString());
         }
-        System.out.println("Lexer:: Returning END-OF-FILE (hippies)");
+        System.out.println("Lexer:: Returning END-OF-FILE");
         return new Symbol(Symbols.EOF);
 
     }
