@@ -68,17 +68,17 @@ public class Rlwlex implements Scanner {
                 com_equal = new State(lct),
                 singles = new State(sngt),
                 end_asign = new State(asgt),//FINAL
-                start_asign = new State(new TokenErrorInformer(this,"ERROR: se esperaba \"-\" despues de")),//null tokenizer estado intermedio asign
+                start_asign = new State(new TokenErrorInformer(this,"ERROR se esoeraba - despues de : ¿no?")),//null tokenizer estado intermedio asign
                 tsend = new State(st),//HACE FALTA EL TOKENIZER!!!!!!!
-                textstrip = new State(new TokenErrorInformer(this,"ERROR: cadena de texto incompleta")),//null token hasta el "
+                textstrip = new State(new TokenErrorInformer(this,"ERROR cadena de texto incompleta")),//null token hasta el "
 
                 comment = new State(null),// null tokenaizer los comentarios se ignoran
                 
                 floating = new State(sft),
-                pmsfloatexp = new State(new TokenErrorInformer(this,"ERROR: secuencia no reconocida, posible CONST_REAL")),
+                pmsfloatexp = new State(new TokenErrorInformer(this,"ERROR secuencia no reconocida, posible  Creal")),
                 post_intspace = new State(it),
                 post_floatspace = new State(sft),
-                pre_floatexp = new State(new TokenErrorInformer(this,"ERROR: secuencia no reconocida, posible CONST_REAL")),// null? para "2.3 E "
+                pre_floatexp = new State(new TokenErrorInformer(this,"ERROR  secuencia no reconocida, posible  Creal")),// null? para "2.3 E "
                 floatexp = new State(sft);// es el pre E deberia poder construir Float o Int
 // null tokenizer obliga a tener exp desp del E y detec sign
              
@@ -245,7 +245,7 @@ public class Rlwlex implements Scanner {
         Token t = state.getToken(strip);
         Iterator<String> it;
         if (t != null) {
-            if(t.get() == Symbols.IDENTIFIER){
+            if(t.getID() == Token.Tokens.ID){
                 it=ts.keySet().iterator();
                 String alphaString = null;
                 while(it.hasNext()&&alphaString==null){
