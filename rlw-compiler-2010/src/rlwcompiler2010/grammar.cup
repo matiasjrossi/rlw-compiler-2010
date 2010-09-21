@@ -26,15 +26,15 @@ firstlevelstatements ::= firstlevelstatements firstlevelstatement {: System.out.
 	;
 
 firstlevelstatement ::= LCURLY scope RCURLY {: System.out.println("Parser:: Using rule: firstlevelstatement ::= LCURLY scope RCURLY"); :}
-        | statement SEMICOLON{: System.out.println("Parser:: Using rule: firstlevelstatement ::= statement SEMICOLON"); :}
+        | statement{: System.out.println("Parser:: Using rule: firstlevelstatement ::= statement"); :}
 	;
 
 scope ::= declarations statements {: System.out.println("Parser:: Using rule: scope ::= declarations statements"); :}
         | statements {: System.out.println("Parser:: Using rule: scope ::= statements"); :}
 	;
 
-statements ::= statements statement SEMICOLON {: System.out.println("Parser:: Using rule: statements ::= statements statement SEMICOLON"); :}
-        | statement SEMICOLON {: System.out.println("Parser:: Using rule: statements ::= statement SEMICOLON"); :}
+statements ::= statements statement {: System.out.println("Parser:: Using rule: statements ::= statements statement"); :}
+        | statement {: System.out.println("Parser:: Using rule: statements ::= statement"); :}
 	;
 
 identifiers ::= identifiers COMMA IDENTIFIER {: System.out.println("Parser:: Using rule: identifiers ::= identifiers COMMA IDENTIFIER"); :}
@@ -46,7 +46,7 @@ statement ::= assignment {: System.out.println("Parser:: Using rule: statement :
         | print {: System.out.println("Parser:: Using rule: statement ::= print"); :}
 	;
 
-assignment ::= IDENTIFIER ASSIGNMENTSYMBOL expresion {: System.out.println("Parser:: Using rule: assignment ::= IDENTIFIER ASSIGNMENTSYMBOL expresion"); :}
+assignment ::= IDENTIFIER ASSIGNMENTSYMBOL expresion SEMICOLON {: System.out.println("Parser:: Using rule: assignment ::= IDENTIFIER ASSIGNMENTSYMBOL expresion SEMICOLON"); :}
 	;
 
 expresion ::= expresion PLUS term {: System.out.println("Parser:: Using rule: expresion ::= expresion PLUS term"); :}
@@ -66,12 +66,12 @@ factor ::= IDENTIFIER {: System.out.println("Parser:: Using rule: factor ::= IDE
 selection ::= IF LBRACKET predicate RBRACKET block ELSE block {: System.out.println("Parser:: Using rule: selection ::= IF LBRACKET predicate RBRACKET block ELSE block"); :}
 	;
 
-block ::= statement SEMICOLON {: System.out.println("Parser:: Using rule: block ::= statement SEMICOLON"); :}
+block ::= statement {: System.out.println("Parser:: Using rule: block ::= statement"); :}
         | LCURLY statements RCURLY {: System.out.println("Parser:: Using rule: block ::= LCURLY statements RCURLY"); :}
 	;
 
 predicate ::= expresion COMPARATOR expresion {: System.out.println("Parser:: Using rule: predicate ::= expresion COMPARATOR expresion"); :}
 	;
 
-print ::= PRINT LBRACKET CONSTANT RBRACKET {: System.out.println("Parser:: Using rule: print ::= PRINT LBRACKET CONSTANT RBRACKET"); :}
+print ::= PRINT LBRACKET CONSTANT RBRACKET SEMICOLON {: System.out.println("Parser:: Using rule: print ::= PRINT LBRACKET CONSTANT RBRACKET SEMICOLON"); :}
 	;
