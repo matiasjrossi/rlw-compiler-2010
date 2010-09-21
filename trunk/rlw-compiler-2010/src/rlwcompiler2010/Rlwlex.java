@@ -36,7 +36,6 @@ public class Rlwlex implements Scanner {
     private BufferedReader br;
 
     Rlwlex(String filePath) throws Exception {
-        System.out.println("Lexer:: Trying to open file \"" + filePath + "\"");
         this.filePath = filePath;
         this.ts = new Hashtable<String, SymbolData>();
         tokenStrip = new Vector<Token>();
@@ -68,17 +67,17 @@ public class Rlwlex implements Scanner {
                 com_equal = new State(lct),
                 singles = new State(sngt),
                 end_asign = new State(asgt),//FINAL
-                start_asign = new State(new TokenErrorInformer(this,"ERROR se esoeraba - despues de : ¿no?")),//null tokenizer estado intermedio asign
+                start_asign = new State(new TokenErrorInformer(this,"ERROR: se esperaba \"-\" despues de")),//null tokenizer estado intermedio asign
                 tsend = new State(st),//HACE FALTA EL TOKENIZER!!!!!!!
-                textstrip = new State(new TokenErrorInformer(this,"ERROR cadena de texto incompleta")),//null token hasta el "
+                textstrip = new State(new TokenErrorInformer(this,"ERROR: cadena de texto incompleta")),//null token hasta el "
 
                 comment = new State(null),// null tokenaizer los comentarios se ignoran
                 
                 floating = new State(sft),
-                pmsfloatexp = new State(new TokenErrorInformer(this,"ERROR secuencia no reconocida, posible  Creal")),
+                pmsfloatexp = new State(new TokenErrorInformer(this,"ERROR: secuencia no reconocida, posible CONST_REAL")),
                 post_intspace = new State(it),
                 post_floatspace = new State(sft),
-                pre_floatexp = new State(new TokenErrorInformer(this,"ERROR  secuencia no reconocida, posible  Creal")),// null? para "2.3 E "
+                pre_floatexp = new State(new TokenErrorInformer(this,"ERROR: secuencia no reconocida, posible CONST_REAL")),// null? para "2.3 E "
                 floatexp = new State(sft);// es el pre E deberia poder construir Float o Int
 // null tokenizer obliga a tener exp desp del E y detec sign
              
@@ -88,7 +87,7 @@ public class Rlwlex implements Scanner {
                 spa = "[ \\t]",
                 exp = "E",
                 mdd = ":",
-                nnl = "[^\\n]",
+                nnl = "[^(\\r\\n|\\n)]",
                 nl = "(\\r\\n|\\n)",
                 bl = "(\\s|\\t|\\r\\n|\\n)",
                 ms = "^\\-$",
@@ -179,13 +178,9 @@ public class Rlwlex implements Scanner {
     @Override
     public Symbol next_token() throws Exception {
         Token t= nextToken();
-        if (t != null) {
-            System.out.println("Lexer:: Returning token " + t.get());
+        if (t != null)
             return new Symbol(t.get(), t.getString());
-        }
-        System.out.println("Lexer:: Returning END-OF-FILE");
-        return new Symbol(Symbols.EOF);
-
+        return null;
     }
 
     protected Token nextToken() {
@@ -245,7 +240,7 @@ public class Rlwlex implements Scanner {
         Token t = state.getToken(strip);
         Iterator<String> it;
         if (t != null) {
-            if(t.getID() == Token.Tokens.ID){
+            if(t.get() == Symbols.IDENTIFIER){
                 it=ts.keySet().iterator();
                 String alphaString = null;
                 while(it.hasNext()&&alphaString==null){
@@ -301,7 +296,7 @@ public class Rlwlex implements Scanner {
         Token t = null;
         Rlwlex lex = null;
         try {
-            lex = new Rlwlex("pitogordo.txt");
+            lex = new Rlwlex("test.txt");
         } catch (Exception ex) {
             Logger.getLogger(Rlwlex.class.getName()).log(Level.SEVERE, null, ex);
         }
