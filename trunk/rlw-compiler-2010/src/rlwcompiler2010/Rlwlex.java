@@ -36,6 +36,7 @@ public class Rlwlex implements Scanner {
     private BufferedReader br;
 
     Rlwlex(String filePath) throws Exception {
+        System.out.println("Lexer:: Trying to open file \"" + filePath + "\"");
         this.filePath = filePath;
         this.ts = new Hashtable<String, SymbolData>();
         tokenStrip = new Vector<Token>();
