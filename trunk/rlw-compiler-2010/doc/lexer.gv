@@ -17,6 +17,7 @@ digraph finite_state_machine {
 	START_DIV -> COMMENT [ label = "/" ];
 	COMMENT -> COMMENT [ label = "NOT(\\n)" ];
 	COM_LESS -> COM_EQUAL [ label = "=" ];
+	COM_LESS -> COM_EQUAL [ label = ">" ];
 	COM_GREAT -> COM_EQUAL [ label = "=" ];
 	START_ASIGN -> END_ASIGN [ label = "-" ];
 	KW -> ID [ label = "[0-9]" ];
@@ -25,14 +26,14 @@ digraph finite_state_machine {
 	INT -> INT [ label = "[0-9]" ];
 	INT -> FLOAT [ label = "." ];
 	INT -> PRE_FLOAT_EXP [ label = "E" ];
-	INT -> POST_INT_ESP [ label = "[ \\t]" ];
+	INT -> POST_INT_EXP [ label = "[ \\t]" ];
 	FLOAT -> FLOAT [ label = "[0-9]" ];
 	FLOAT -> PRE_FLOAT_EXP [ label = "E" ];
-	FLOAT -> POST_FLOAT_ESP [ label = "[ \\t]" ];
-	POST_FLOAT_ESP -> POST_FLOAT_ESP [ label = "[ \\t]" ];
-	POST_FLOAT_ESP -> PRE_FLOAT_EXP [ label = "E" ];
-	POST_INT_ESP -> POST_INT_ESP [ label = "[ \\t]" ];
-	POST_INT_ESP -> PRE_FLOAT_EXP [ label = "E" ];
+	FLOAT -> POST_FLOAT_EXP [ label = "[ \\t]" ];
+	POST_FLOAT_EXP -> POST_FLOAT_EXP [ label = "[ \\t]" ];
+	POST_FLOAT_EXP -> PRE_FLOAT_EXP [ label = "E" ];
+	POST_INT_EXP -> POST_INT_EXP [ label = "[ \\t]" ];
+	POST_INT_EXP -> PRE_FLOAT_EXP [ label = "E" ];
 	PRE_FLOAT_EXP -> PRE_FLOAT_EXP [ label = "[ \\t]" ];
 	PRE_FLOAT_EXP -> PRE_FLOAT_SIGN [ label = "-" ];
 	PRE_FLOAT_EXP -> FLOAT_EXP [ label = "[0-9]" ];
