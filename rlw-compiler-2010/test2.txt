@@ -1,18 +1,6 @@
-int pepe;
-
-pepe :- 18/pepe;
-
-
-{
-    float pepa;
-    pepa :- 67-0.5;
-    print("some string");
-}
-
-
-//if(5<7)
-//   pepe :- pepe + 12;
-//else
-  // {
-    //  pepe :- pepe -10;
-   //}
+if(5<=pepe)
+    pepe :- pepe + 12;
+else
+    {
+        pepe :- pepe -10;
+    }

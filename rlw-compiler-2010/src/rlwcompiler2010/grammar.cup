@@ -73,5 +73,12 @@ block ::= statement {: System.out.println("Parser:: Using rule: block ::= statem
 predicate ::= expresion COMPARATOR expresion {: System.out.println("Parser:: Using rule: predicate ::= expresion COMPARATOR expresion"); :}
 	;
 
-print ::= PRINT LBRACKET CONSTANT RBRACKET SEMICOLON {: System.out.println("Parser:: Using rule: print ::= PRINT LBRACKET CONSTANT RBRACKET SEMICOLON"); :}
+print ::= PRINT LBRACKET CONSTA
+NT RBRACKET SEMICOLON {: System.out.println("Parser:: Using rule: print ::= PRINT LBRACKET CONSTANT RBRACKET SEMICOLON"); :}
 	;
+
+
+/* Error recovery productions */
+statement ::= error SEMICOLON
+        | LCURLY error RCURLY
+        ;
