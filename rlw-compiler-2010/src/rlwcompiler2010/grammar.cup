@@ -9,76 +9,75 @@ terminal ASSIGNMENTSYMBOL, BY, COMMA, COMPARATOR, CONSTANT, ELSE, IDENTIFIER, IF
 non terminal program, assignment, block, declaration, declarations, expresion, factor, identifiers, predicate, print, scope, selection, statement, statements, term, firstlevelstatement, firstlevelstatements;
 
 
-program ::= declarations firstlevelstatements {: System.out.println("Parser:: Using rule: program ::= declarations firstlevelstatements"); :}
-        | firstlevelstatements {: System.out.println("Parser:: Using rule: program ::= firstlevelstatements"); :}
+program ::= declarations firstlevelstatements {: Logger.get().logDebug("Parser", "Using rule: program ::= declarations firstlevelstatements"); :}
+        | firstlevelstatements {: Logger.get().logDebug("Parser", "Using rule: program ::= firstlevelstatements"); :}
 	;
 
-declarations ::= declarations declaration {: System.out.println("Parser:: Using rule: declarations ::= declarations declaration"); :}
-        | declaration {: System.out.println("Parser:: Using rule: declarations ::= declaration"); :}
+declarations ::= declarations declaration {: Logger.get().logDebug("Parser", "Using rule: declarations ::= declarations declaration"); :}
+        | declaration {: Logger.get().logDebug("Parser", "Using rule: declarations ::= declaration"); :}
 	;
 
 
-declaration ::= TYPE identifiers SEMICOLON {: System.out.println("Parser:: Using rule: declaration ::= TYPE identifiers SEMICOLON"); :}
+declaration ::= TYPE identifiers SEMICOLON {: Logger.get().logDebug("Parser", "Using rule: declaration ::= TYPE identifiers SEMICOLON"); :}
 	;
 
-firstlevelstatements ::= firstlevelstatements firstlevelstatement {: System.out.println("Parser:: Using rule: firstlevelstatements ::= firstlevelstatements firstlevelstatement"); :}
-        | firstlevelstatement {: System.out.println("Parser:: Using rule: firstlevelstatements ::= firstlevelstatement"); :}
+firstlevelstatements ::= firstlevelstatements firstlevelstatement {: Logger.get().logDebug("Parser", "Using rule: firstlevelstatements ::= firstlevelstatements firstlevelstatement"); :}
+        | firstlevelstatement {: Logger.get().logDebug("Parser", "Using rule: firstlevelstatements ::= firstlevelstatement"); :}
 	;
 
-firstlevelstatement ::= LCURLY scope RCURLY {: System.out.println("Parser:: Using rule: firstlevelstatement ::= LCURLY scope RCURLY"); :}
-        | statement{: System.out.println("Parser:: Using rule: firstlevelstatement ::= statement"); :}
+firstlevelstatement ::= LCURLY scope RCURLY {: Logger.get().logDebug("Parser", "Using rule: firstlevelstatement ::= LCURLY scope RCURLY"); :}
+        | statement{: Logger.get().logDebug("Parser", "Using rule: firstlevelstatement ::= statement"); :}
 	;
 
-scope ::= declarations statements {: System.out.println("Parser:: Using rule: scope ::= declarations statements"); :}
-        | statements {: System.out.println("Parser:: Using rule: scope ::= statements"); :}
+scope ::= declarations statements {: Logger.get().logDebug("Parser", "Using rule: scope ::= declarations statements"); :}
+        | statements {: Logger.get().logDebug("Parser", "Using rule: scope ::= statements"); :}
 	;
 
-statements ::= statements statement {: System.out.println("Parser:: Using rule: statements ::= statements statement"); :}
-        | statement {: System.out.println("Parser:: Using rule: statements ::= statement"); :}
+statements ::= statements statement {: Logger.get().logDebug("Parser", "Using rule: statements ::= statements statement"); :}
+        | statement {: Logger.get().logDebug("Parser", "Using rule: statements ::= statement"); :}
 	;
 
-identifiers ::= identifiers COMMA IDENTIFIER {: System.out.println("Parser:: Using rule: identifiers ::= identifiers COMMA IDENTIFIER"); :}
-        | IDENTIFIER {: System.out.println("Parser:: Using rule: identifiers ::= IDENTIFIER"); :}
+identifiers ::= identifiers COMMA IDENTIFIER {: Logger.get().logDebug("Parser", "Using rule: identifiers ::= identifiers COMMA IDENTIFIER"); :}
+        | IDENTIFIER {: Logger.get().logDebug("Parser", "Using rule: identifiers ::= IDENTIFIER"); :}
 	;
 
-statement ::= assignment {: System.out.println("Parser:: Using rule: statement ::= assignment"); :}
-        | selection {: System.out.println("Parser:: Using rule: statement ::= selection"); :}
-        | print {: System.out.println("Parser:: Using rule: statement ::= print"); :}
+statement ::= assignment {: Logger.get().logDebug("Parser", "Using rule: statement ::= assignment"); :}
+        | selection {: Logger.get().logDebug("Parser", "Using rule: statement ::= selection"); :}
+        | print {: Logger.get().logDebug("Parser", "Using rule: statement ::= print"); :}
 	;
 
-assignment ::= IDENTIFIER ASSIGNMENTSYMBOL expresion SEMICOLON {: System.out.println("Parser:: Using rule: assignment ::= IDENTIFIER ASSIGNMENTSYMBOL expresion SEMICOLON"); :}
+assignment ::= IDENTIFIER ASSIGNMENTSYMBOL expresion SEMICOLON {: Logger.get().logDebug("Parser", "Using rule: assignment ::= IDENTIFIER ASSIGNMENTSYMBOL expresion SEMICOLON"); :}
 	;
 
-expresion ::= expresion PLUS term {: System.out.println("Parser:: Using rule: expresion ::= expresion PLUS term"); :}
-        | expresion MINUS term {: System.out.println("Parser:: Using rule: expresion ::= expresion MINUS term"); :}
-        | term {: System.out.println("Parser:: Using rule: expresion ::= term"); :}
+expresion ::= expresion PLUS term {: Logger.get().logDebug("Parser", "Using rule: expresion ::= expresion PLUS term"); :}
+        | expresion MINUS term {: Logger.get().logDebug("Parser", "Using rule: expresion ::= expresion MINUS term"); :}
+        | term {: Logger.get().logDebug("Parser", "Using rule: expresion ::= term"); :}
 	;
 
-term ::= term TIMES factor {: System.out.println("Parser:: Using rule: term ::= term TIMES factor"); :}
-        | term BY factor {: System.out.println("Parser:: Using rule: term ::= term BY factor"); :}
-        | factor {: System.out.println("Parser:: Using rule: term ::= factor"); :}
+term ::= term TIMES factor {: Logger.get().logDebug("Parser", "Using rule: term ::= term TIMES factor"); :}
+        | term BY factor {: Logger.get().logDebug("Parser", "Using rule: term ::= term BY factor"); :}
+        | factor {: Logger.get().logDebug("Parser", "Using rule: term ::= factor"); :}
 	;
 
-factor ::= IDENTIFIER {: System.out.println("Parser:: Using rule: factor ::= IDENTIFIER"); :}
-        | CONSTANT {: System.out.println("Parser:: Using rule: factor ::= CONSTANT"); :}
+factor ::= IDENTIFIER {: Logger.get().logDebug("Parser", "Using rule: factor ::= IDENTIFIER"); :}
+        | CONSTANT {: Logger.get().logDebug("Parser", "Using rule: factor ::= CONSTANT"); :}
 	;
 
-selection ::= IF LBRACKET predicate RBRACKET block ELSE block {: System.out.println("Parser:: Using rule: selection ::= IF LBRACKET predicate RBRACKET block ELSE block"); :}
+selection ::= IF LBRACKET predicate RBRACKET block ELSE block {: Logger.get().logDebug("Parser", "Using rule: selection ::= IF LBRACKET predicate RBRACKET block ELSE block"); :}
 	;
 
-block ::= statement {: System.out.println("Parser:: Using rule: block ::= statement"); :}
-        | LCURLY statements RCURLY {: System.out.println("Parser:: Using rule: block ::= LCURLY statements RCURLY"); :}
+block ::= statement {: Logger.get().logDebug("Parser", "Using rule: block ::= statement"); :}
+        | LCURLY statements RCURLY {: Logger.get().logDebug("Parser", "Using rule: block ::= LCURLY statements RCURLY"); :}
 	;
 
-predicate ::= expresion COMPARATOR expresion {: System.out.println("Parser:: Using rule: predicate ::= expresion COMPARATOR expresion"); :}
+predicate ::= expresion COMPARATOR expresion {: Logger.get().logDebug("Parser", "Using rule: predicate ::= expresion COMPARATOR expresion"); :}
 	;
 
-print ::= PRINT LBRACKET CONSTA
-NT RBRACKET SEMICOLON {: System.out.println("Parser:: Using rule: print ::= PRINT LBRACKET CONSTANT RBRACKET SEMICOLON"); :}
+print ::= PRINT LBRACKET CONSTANT RBRACKET SEMICOLON {: Logger.get().logDebug("Parser", "Using rule: print ::= PRINT LBRACKET CONSTANT RBRACKET SEMICOLON"); :}
 	;
 
 
 /* Error recovery productions */
-statement ::= error SEMICOLON
-        | LCURLY error RCURLY
+statement ::= error SEMICOLON {: Logger.get().logDebug("Parser", "Using ERROR rule: statement ::= error SEMICOLON"); :}
+        | LCURLY error RCURLY {: Logger.get().logDebug("Parser", "Using ERROR rule: statement ::= LCURLY error RCURLY"); :}
         ;

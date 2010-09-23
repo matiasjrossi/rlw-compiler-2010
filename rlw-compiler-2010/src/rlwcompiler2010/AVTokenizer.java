@@ -11,11 +11,11 @@ package rlwcompiler2010;
  */
 public abstract class AVTokenizer implements ITokenizer {
 // Annoying Verbosic Tokenizer!
-    private Rlwlex lex;
-    public AVTokenizer(Rlwlex lex){
+    private Rlwlexer lex;
+    public AVTokenizer(Rlwlexer lex){
         this.lex=lex;
     }
     protected void notify(String s){
-        lex.log(s);
+        Logger.get().logOutput(s);
     }
 }

@@ -10,14 +10,14 @@ package rlwcompiler2010;
  * @author je
  */
 public class TokenErrorInformer extends AVTokenizer{
-    private String mensaje = "ERROR NO ESPECIFICADO";
-    public TokenErrorInformer(Rlwlex les,String m){
+    private String message = "UNSPECIFIED ERROR";
+    public TokenErrorInformer(Rlwlexer les,String m){
         super(les);
         if(m!=null)
-            mensaje=m;
+            message=m;
     }
     public Token build(String s) {
-        notify(mensaje+" <"+s+">");
+        notify(message+" \'"+s+"\'");
         return null;
     }
 

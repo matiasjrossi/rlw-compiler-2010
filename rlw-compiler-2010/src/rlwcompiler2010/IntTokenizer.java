@@ -24,12 +24,12 @@ public class IntTokenizer extends AVTokenizer {
         } catch (Exception e) {
         }
         if (!s.isEmpty()) {
-            notify("ERROR: Valor fuera de rango para Constante Entera: <" + s + ">.");
+            notify("ERROR: Out-of-range value for integer constant: \'" + s + "\'.");
         }
         return null;
     }
 
-    public IntTokenizer(Rlwlex lex) {
+    public IntTokenizer(Rlwlexer lex) {
         super(lex);
     }
 }

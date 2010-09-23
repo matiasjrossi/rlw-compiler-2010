@@ -11,7 +11,7 @@ package rlwcompiler2010;
  */
 class LogicCompTokenizer extends AVTokenizer {
 
-    public LogicCompTokenizer(Rlwlex lex) {
+    public LogicCompTokenizer(Rlwlexer lex) {
          super(lex);
     }
     

@@ -11,7 +11,7 @@ package rlwcompiler2010;
  */
 class StringTokenizer extends AVTokenizer{
 
-    public StringTokenizer(Rlwlex les) {
+    public StringTokenizer(Rlwlexer les) {
         super(les);
     }
 

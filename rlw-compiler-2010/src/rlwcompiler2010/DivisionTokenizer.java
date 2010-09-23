@@ -11,7 +11,7 @@ package rlwcompiler2010;
  */
 class DivisionTokenizer extends AVTokenizer {
 
-    public DivisionTokenizer(Rlwlex lex) {
+    public DivisionTokenizer(Rlwlexer lex) {
         super(lex);
     }
 

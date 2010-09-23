@@ -23,7 +23,7 @@ public class KeywordTokenizer extends AVTokenizer {
         return null;
     }
 
-    public KeywordTokenizer(Rlwlex lex) {
+    public KeywordTokenizer(Rlwlexer lex) {
         super(lex);
         dicc.put("if", Symbols.IF);
         dicc.put("else", Symbols.ELSE);
