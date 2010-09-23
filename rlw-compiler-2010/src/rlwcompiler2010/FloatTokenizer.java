@@ -23,7 +23,7 @@ class FloatTokenizer extends AVTokenizer {
         try {
             if (s.matches(regex)) {
                 Float Num = new Float(s);
-                if (MIN_VALUE < Num && Num < MAX_VALUE) {
+                if (Num==0 ||(MIN_VALUE < Num && Num < MAX_VALUE) {
                     return new Token(ss, Symbols.CONSTANT);
                 }                    
             }

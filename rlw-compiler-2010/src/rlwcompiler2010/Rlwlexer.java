@@ -87,8 +87,7 @@ public class Rlwlexer implements Scanner {
                 post_intspace = new State(it),
                 post_floatspace = new State(sft),
                 pre_floatexp = new State(new TokenErrorInformer(this,"ERROR: Unrecognised sequence (might be a float constant?)")),// null? para "2.3 E "
-                floatexp = new State(sft);// es el pre E deberia poder construir Float o Int
-// null tokenizer obliga a tener exp desp del E y detec sign
+                floatexp = new State(sft);
              
         String schar = "[a-zA-Z]",
                 dig = "[0-9]",
