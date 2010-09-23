@@ -308,7 +308,7 @@ public class Rlwlexer implements Scanner {
         Token t = null;
         Rlwlex lex = null;
         try {
-            lex = new Rlwlex("pitogordo.txt");
+            lex = new Rlwlex("otro test.txt");
         } catch (Exception ex) {
             Logger.getLogger(Rlwlex.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -1,6 +1,0 @@
-if(5<=pepe)
-    pepe :- pepe + 12;
-else
-    {
-        pepe :- pepe -10;
-    }
