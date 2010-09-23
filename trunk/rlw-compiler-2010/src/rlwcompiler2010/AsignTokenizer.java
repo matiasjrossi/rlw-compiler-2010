@@ -11,7 +11,7 @@ package rlwcompiler2010;
  */
 class AsignTokenizer extends AVTokenizer{
 
-    public AsignTokenizer(Rlwlex lex) {
+    public AsignTokenizer(Rlwlexer lex) {
         super(lex);
     }
 

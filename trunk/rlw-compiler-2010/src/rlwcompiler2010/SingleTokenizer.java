@@ -11,7 +11,7 @@ package rlwcompiler2010;
  */
 class SingleTokenizer extends AVTokenizer {
 
-    public SingleTokenizer(Rlwlex lex) {
+    public SingleTokenizer(Rlwlexer lex) {
         super(lex);
     }
 

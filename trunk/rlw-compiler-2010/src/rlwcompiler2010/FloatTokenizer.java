@@ -13,7 +13,7 @@ class FloatTokenizer extends AVTokenizer {
     public static final float MAX_VALUE = (float) (1.17549435E38);
     public static final float MIN_VALUE = (float) (3.40282347E-38);
 
-    public FloatTokenizer(Rlwlex lex) {
+    public FloatTokenizer(Rlwlexer lex) {
         super(lex);
     }
 
@@ -30,9 +30,9 @@ class FloatTokenizer extends AVTokenizer {
         } catch (Exception e) { }
 
         if (!s.isEmpty())
-            notify("ERROR: Valor fuera de rango para Constante Real: <"+ ss + ">.");
+            notify("ERROR: Out-of-range value for float constant: \'"+ ss + "\'.");
         if (!s.equals("."))
-            notify("ERROR: Valor fuera de rango para Constante Real: <"+ ss + ">.");
+            notify("ERROR: Unrecognised sequence (might be a float constant?)");
         return null;
     }
 }

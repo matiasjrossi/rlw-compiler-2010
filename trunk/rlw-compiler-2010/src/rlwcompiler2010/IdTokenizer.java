@@ -21,17 +21,17 @@ public class IdTokenizer extends AVTokenizer {
                 return new Token(s, Symbols.IDENTIFIER);
             } else {
                 String sub = s.substring(0, 15);
-                notify("WARNING: Longuitud no permitida de identificador: " +
-                        "<" + s + ">. Se acorta como: <" + sub +">.");
+                notify("WARNING: Identifiers must be shorter than 15 characters: " +
+                        "\'" + s + "\'.\n         Trimming to: \'" + sub +"\'.");
                 return new Token(sub, Symbols.IDENTIFIER);
             }            
         } else {
-            notify("ERROR: Identificador comienza con caracter : <" + s + ">.");
+            notify("ERROR: Identifiers are not allowed to start with \'" + s + "\'");
         }
         return null;
     }
 
-    public IdTokenizer(Rlwlex lex)
+    public IdTokenizer(Rlwlexer lex)
     {
         super(lex);
     }

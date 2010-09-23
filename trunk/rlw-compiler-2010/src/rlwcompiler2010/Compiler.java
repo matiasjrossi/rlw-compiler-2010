@@ -17,21 +17,28 @@ public class Compiler {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        try {
-            // Build a Scanner
-            Scanner s = new Rlwlex("test2.txt");
-            System.out.println("Compiler:: Scanner successfully built!");
+        // This makes the compiler be verbose
+        Logger.get().unmute();
 
-            // Build a Parser using the previously created Scanner
-            Parser p = new Parser(s);
-            System.out.println("Compiler:: Parser successfully built!");
-            System.out.println("Compiler:: Now i'm calling parser.parse()...");
-            p.parse();
-            System.out.println("Compiler:: Finished");
+        try {
+            // Init the Scanner
+            Rlwlexer.initLexer("test.txt");
+            Logger.get().logDebug("Compiler", "Scanner successfully built!");
         } catch (Exception e) {
-            System.out.println("Compiler:: We're screwed! It failed big time!!!");
-            e.printStackTrace();
+            Logger.get().logDebug("Compiler", "Something went wrong calling init() on the lexer");
+            Logger.get().showException(e);
+        }
+        // Build a Parser using the Scanner
+        Parser p = new Rlwparser(Rlwlexer.getLexer());
+        Logger.get().logDebug("Compiler", "Parser successfully built!");
+        try {
+            Logger.get().logDebug("Compiler", "Now i'm calling parser.parse()...");
+            p.parse();
+            Logger.get().logDebug("Compiler", "Finished parsing");
+        } catch (Exception e) {
+            Logger.get().logDebug("Compiler", "We're screwed! It failed big time!!!");
+            Logger.get().showException(e);
+            Logger.get().logOutput("Uh Oh! Something went horribly wrong, please debug.");
         }
 
         
