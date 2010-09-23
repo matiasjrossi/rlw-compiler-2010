@@ -31,8 +31,8 @@ class FloatTokenizer extends AVTokenizer {
 
         if (!s.isEmpty())
             notify("ERROR: Out-of-range value for float constant: \'"+ ss + "\'.");
-        if (!s.equals("."))
-            notify("ERROR: Unrecognised sequence (might be a float constant?)");
+        if (s.equals("."))
+            notify("ERROR: Unrecognised '.' (might be a float constant?)");
         return null;
     }
 }
