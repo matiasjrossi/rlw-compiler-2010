@@ -117,9 +117,6 @@ public class Rlwlexer implements Scanner {
         s0.addTrans(cl, com_less);
         s0.addTrans(ce, com_equal);
         s0.addTrans(sg, singles);
-        s0.addTrans(cl, com_less);
-        s0.addTrans(ce, com_equal);
-        s0.addTrans(sg, singles);
         s0.addTrans(dq, textstrip);
 
         textstrip.addTrans(ndq, textstrip);
@@ -129,6 +126,7 @@ public class Rlwlexer implements Scanner {
         comment.addTrans(nnl, comment);
 
         com_less.addTrans(ce, com_equal);// < <> <=
+        com_less.addTrans(cg, com_equal);// > >=
         com_great.addTrans(ce, com_equal);// > >=
         start_asign.addTrans(ms, end_asign); // :-
 
