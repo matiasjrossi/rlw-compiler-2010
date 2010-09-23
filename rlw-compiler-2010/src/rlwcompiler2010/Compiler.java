@@ -21,7 +21,7 @@ public class Compiler {
             System.out.println("You need to specify the file to compile.");
         else {
             // This makes the compiler be verbose
-            //Logger.get().dontBeShy();
+            Logger.get().dontBeShy();
 
             try {
                 // Init the Scanner
@@ -37,7 +37,7 @@ public class Compiler {
             try {
                 Logger.get().logDebug("Compiler", "Now i'm calling parser.parse()...");
                 p.parse();
-                Logger.get().logDebug("Compiler", "Finished parsing");
+                System.out.println("\nFile " + args[0] + " successfully parsed.");
             } catch (Exception e) {
                 Logger.get().logDebug("Compiler", "We're screwed! It failed big time!!!");
                 Logger.get().showException(e);
