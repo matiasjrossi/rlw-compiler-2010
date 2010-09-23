@@ -1,0 +1,28 @@
+//This is a valid program
+
+//Those are global variable declarations
+int foo;
+float bar, baz;
+
+//This is an assignment statement
+foo :- 156;
+
+//This is a selection
+if (foo < 0) {
+   bar :- 156.4E19;
+   baz :- 0.0;
+} else {
+   bar :- 0;
+   foo :- foo + 15;
+}
+
+//This is a local scope
+{
+   float foo;
+   foo :- bar; // Here we're using both global and local identifiers
+   print("i'm inside the scope");
+}
+
+print("i'm outside the scope");
+
+
