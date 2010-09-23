@@ -17,7 +17,7 @@ public class IdTokenizer extends AVTokenizer {
         //Check for charcter start and lenght
         String regex = "^[a-zA-Z][a-zA-Z0-9]*";
         if (s.matches(regex)) {
-            if (!s.isEmpty() && s.length() < 15) {
+            if (!s.isEmpty() && s.length() <= 15) {
                 return new Token(s, Symbols.IDENTIFIER);
             } else {
                 String sub = s.substring(0, 15);
