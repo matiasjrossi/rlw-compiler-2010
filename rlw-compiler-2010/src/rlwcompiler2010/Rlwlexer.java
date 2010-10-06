@@ -22,7 +22,7 @@ import java_cup.runtime.Symbol;
 public class Rlwlexer implements Scanner {
 
     private int l = 1; // current line
-    private int index = 0; // position src file
+    private int index = 1; // position in line
     private String strip = ""; // readed chars "buffer"
     private String filePath;
     private State state; // current state
@@ -191,17 +191,12 @@ public class Rlwlexer implements Scanner {
                     return t;
                 }
                 c = (char) i;
-                index++;
             } catch (Exception e) {
                 System.out.println("WTF???? i:" + i + " c:" + c + " e:" + e);
                 //Corte de emergencia
                 t = makeToken(strip);
                 strip = "";
                 return t;
-            }
-            if (String.valueOf(c).matches("(\\r\\n|\\n)")) {
-                l++;
-                index = 0;
             }
 
             State ns = state.next(c);
@@ -210,7 +205,7 @@ public class Rlwlexer implements Scanner {
                 state = ns;
             } else {// si no tengo prox estado es final (valido/ERROR)
                 t = makeToken(strip);
-                //corregir index y strip pa que salga andando
+                //corregir strip pa que salga andando
                 // el char actual es el que no valida con el estado acutal
                 // forma parte del proximo token
                 strip = String.valueOf(c);
@@ -220,6 +215,13 @@ public class Rlwlexer implements Scanner {
                     strip = "";
                     state = s0;
                 }
+            }
+            // corregir index
+            if (String.valueOf(c).matches("(\\r\\n|\\n)")) {
+                l++;
+                index = 1;
+            } else {
+                index++;
             }
         }
         return t;
@@ -232,93 +234,28 @@ public class Rlwlexer implements Scanner {
     private Token makeToken(String strip) {
         Token t = state.getToken(strip);
         if (t != null) {
+            String s = null;
+            int i = -1;
             if (t.get() == Symbols.IDENTIFIER) {
-                if (ts.containsKey(t.getString())) {
-                    ts.get(t.getString()).addOccurrence(l, index);
-                    System.out.println(l + ":" + index + " Agregado nueva ocurrencia del simbolo: " + t.getString());
+                s = t.getString();
+                i= index - s.length();
+            } else if (t.get() == Symbols.CONSTANT) {
+                s = "CONSTANT_" + t.getString();
+                i=index - t.getString().length();
+            }
+            if (s != null) {
+                if (ts.containsKey(s)) {
+                    ts.get(s).addOccurrence(l, i);
+                    System.out.println(l + ":" + i + " Agregado nueva ocurrencia del simbolo: " + s);
                 } else {
                     SymbolData sd = new SymbolData();
-                    sd.addOccurrence(l, index);
-                    ts.put(t.getString(), sd);
-                    System.out.println(l + ":" + index + "Agregado nuevo simbolo a la tabla: " + t.getString());
+                    sd.addOccurrence(l, i);
+                    ts.put(s, sd);
+                    System.out.println(l + ":" + i + " Agregado nuevo simbolo a la tabla: " + s);
                 }
             }
-
             tokenStrip.add(t);
         }
         return t;
     }
-
-    /*
-    static public void main(String[] args) throws FileNotFoundException {
-    test2();
-    }
-
-    static private void test() {
-    // SI TENEMOS PROBLEMAS CON LOS FIN DE LINEA TENEMOS PROBLEMAS SERIOS
-    Rlwlex lex = null;
-    try {
-    lex = new Rlwlex("test.txt");
-    } catch (Exception ex) {
-    Logger.getLogger(Rlwlex.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    lex.log("probando con test.txt!");
-
-    String s = "";
-    int c = 0;
-    do {
-    s = lex.nextLine();
-
-    if (s != null && s.endsWith("\n")) {
-    System.out.println("con n");
-
-    }
-    if (s != null && s.endsWith("\r\n")) {
-    System.out.println("con r");
-    //   System.out.println(s + (s != null && s.endsWith("\n") ? " "
-    //           + " (" + (++c) + "," + lex.l + ")" : ""));
-
-    }
-    } while (s != null);
-
-    }
-
-    static private void test2() {
-    Token t = null;
-    Rlwlex lex = null;
-    try {
-    lex = new Rlwlex("otro test.txt");
-    } catch (Exception ex) {
-    Logger.getLogger(Rlwlex.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    do {
-    try {
-    t = lex.nextToken();
-    //     System.out.println(t.get() + " " + t.getString());
-    } catch (Exception e) {
-    //              e.printStackTrace();
-    }
-    } while (t != null);
-
-    for(Token t2 : lex.tokenStrip)
-    System.out.println("("+t2.get()+")"+t2.getString());
-
-
-    }
-
-    static private void test3() {
-    Rlwlex lex = null;
-    try {
-    lex = new Rlwlex("test.txt");
-    } catch (Exception ex) {
-    Logger.getLogger(Rlwlex.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    lex.log("probando con test.txt!");
-    Token t = null;
-    do {
-    t = lex.nextToken();
-    System.out.println("Encontrado " + t);
-    } while (t != null);
-    }
-     */
 }
