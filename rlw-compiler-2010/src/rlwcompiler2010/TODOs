@@ -58,14 +58,3 @@ Hay una variable "ts" en el analizador lexico. Pero nunca es llenada.
 CORREGIR GRAFO EN EL INFORME!
     agregar estado blanks, sacar estado id
     se lo derivo a algun taliban del codigo que use esa cosa linux
-
-efecto colateral de las correcciones?
-[...]
-Identificadores:
-
-   h, unnombremuylargo1,unnombremuylargo2,a,b123;  123b
-[...]
-At line 12: ERROR: '-' expected after ':'
-At line 13: ERROR: Unexpected identifier: h   <-------------- este error esta mal, no?
-At line 13: WARNING: Identifiers must be shorter than 15 characters: 'unnombremuylargo1'.
-         Trimming to: 'unnombremuylarg'.
