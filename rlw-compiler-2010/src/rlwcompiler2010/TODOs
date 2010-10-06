@@ -1,4 +1,3 @@
-<JR'S STUFF>
 - (REVISAR) Su informe no dice nada referido al desarrollo de su analizador
 sintáctico en particular. Por otro lado, la descripción de analizadores
 sintácticos tiene algunos errores conceptuales.
@@ -15,49 +14,20 @@ se refiere al token FOR. Tampoco está en la gramática, claro.
  0 productions never reduced.
  0 conflicts detected (0 expected).
  Code written to "Parser.java", and "Symbols.java".
-</JR'S STUFF>
 
-- (REVISAR) Esta forma de eliminar el espaciado es incorrecta:
-(solucion)-: agregue un estado blanks sin tokenizer (misma politica que comentarios)
-DONE! not fully tested and never will
 
-No es bueno que el archivo se lea por línea: método nextLine(). Sino que debería
-ser leído caractér por caractér.
-El ciclo principal del analizador léxico debería ser uno, sin anidamientos.
-DONE! not fully tested and never will
-
-- (DETALLE) La conclusión de su informa indica que usaron el generador de
-parsers YACC. Mientras que el código se utilizó CUP.
-(solucion):- replace boludo en inform
-DONE!
-
-- (DETALLE) En el grafo del autómata presentado en el informe, se observan dos
-estados por separado para palabras reservadas y para identificadores. En
-realidad, debe tomarse como un solo estado. No obstante, esto se implementó
-correctamente en el compilador.
-(solucion):- aclararle via mail que es un estado para los 2 y 
-    otro solo de identificadores luego de resivir un digito.
-    Es verdad que el segundo estado no es realmente necesario... se podria sacar
-    y ya lo saque, del codigo y del informe!!!!!
-    solo resta corregir el grafo.png,
-
-- (COMENTARIO) No hace falta verificar en las clases Tokenizer si el buffer en
-el analizador léxico está bien constituido mediante código como:
-(solucion):- chequear si realmente es inecesario, decidir sacar las verif innecesarias/explicar mejor porque son necesarias
-
-- (COMENTARIO) No es buena idea calcular la siguiente transición de estados
-utilizando expresiones regulares.
-(solucion):- negociar, es realmente importante la optimizacion en un trabajo didactico-conceptual?
-
-- (REVISAR) No se muestra la tabla de símbolos al salir. Es más, compilé y probé
-el programa corriendo. Por lo que vi, los identificadores ni las constantes
-están siendo almacenadas en ninguna estructura como la de una tabla de símbolos.
-Hay una variable "ts" en el analizador lexico. Pero nunca es llenada.
-(solucion):- my bad, lo solociono facil, lo unico que no se, 
-    es que @#$%& datos meterle aparte del token...
-    le meti las occurrencias por ahora.....
-    pseudo-DONE!
+- Se modifico la forma de eleminar espacios; para ello, adoptandos la misma politica que con los comentarios, se creo un nuevo estado "blanks" que encarga de ello.
+- Se cambio el metodo de lectura del archivo fuente, ahora se realiza de a un caracter por vez.
+- Se corrigio la conclusion del informe sobre el generador de parsers para mantener la coherencia con el codigo.
+- Se fusionaron los estados de deteccion de identificadores y palabras reservadas, simplificando el automata.
+- Se quitaron chequeos innecesarios en los distintos Tokenizers.
+- Se cargan a la tabla de simbolos los distintos identificadores y constantes, registrando la ubicacion de sus apariciones.
+- No se modifico el calculo de transiciones, seguimos utilizando expresiones regulares, 
+ya que si bien implican un costo computacional extra, periten una mayor transparencia de la logica 
+que se considero más importante que la optimizacion del codigo para un trabajo academico.
 
 CORREGIR GRAFO EN EL INFORME!
-    agregar estado blanks, sacar estado id
-    se lo derivo a algun taliban del codigo que use esa cosa linux
+    agregue estado blanks, sacar estado id
+    le derivo a algun taliban del codigo que use esa cosa de linux
+    que regenere el png y lo meta en el informe
+
