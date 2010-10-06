@@ -68,7 +68,7 @@ public class Rlwlexer implements Scanner {
         s0 = new State(null);//estado inicial
         State blanks = new State(null),//null tokenizer, los espacios se ignoran
                 kw = new State(rct), //representa Validacion de KeyWords
-                id = new State(idt), //representa Validacion de ID
+//                id = new State(idt), //representa Validacion de ID
                 integer = new State(it), //representa Validacion de Constante Integer
                 start_div = new State(div),
                 com_less = new State(lct),
@@ -135,11 +135,12 @@ public class Rlwlexer implements Scanner {
         com_great.addTrans(ce, com_equal);// > >=
         start_asign.addTrans(ms, end_asign); // :-
 
-        kw.addTrans(dig, id);
 
         kw.addTrans(schar, kw);
-        id.addTrans(schar, id);
-        id.addTrans(dig, id);
+        kw.addTrans(dig, kw);
+//        kw.addTrans(dig, id);
+//        id.addTrans(schar, id);
+//       id.addTrans(dig, id);
 
         // lo referido al float es altamente dudoso
         integer.addTrans(dig, integer);
