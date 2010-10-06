@@ -21,7 +21,7 @@ import java_cup.runtime.Symbol;
  */
 public class Rlwlexer implements Scanner {
 
-    private int l = 0; // current line
+    private int l = 1; // current line
 //    private int index = 0; // position src file
     private String strip = ""; // readed chars "buffer"
 //    private String source; // src ln (from src file)
@@ -233,6 +233,8 @@ public class Rlwlexer implements Scanner {
                 strip = "";
                 return t;
             }
+            if(String.valueOf(c).matches("(\\r\\n|\\n)"))
+                l++;
             State ns = state.next(c);
 
             if (ns != null) { // si tengo transicion, todo va bien
