@@ -22,7 +22,7 @@ public class Compiler {
             args = new String[1];
             args[0]="C:\\Documents and Settings\\G\\Mis documentos\\"
                     +"NetBeansProjects\\trunk\\rlw-compiler-2010\\"
-                    +"valid-program.in";
+                    +"wrong-program.in";
            // Logger.get().dontBeShy();
         }//END G-parche
                 
