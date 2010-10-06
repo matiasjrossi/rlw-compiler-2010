@@ -17,6 +17,15 @@ public class Compiler {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        //BEGIN G-parche elputo netbeans no me toma los parametros :S
+        {
+            args = new String[1];
+            args[0]="C:\\Documents and Settings\\G\\Mis documentos\\"
+                    +"NetBeansProjects\\trunk\\rlw-compiler-2010\\"
+                    +"valid-program.in";
+           // Logger.get().dontBeShy();
+        }//END G-parche
+                
         if (args.length < 1)
             System.out.println("You need to specify the file to compile.");
         else {
