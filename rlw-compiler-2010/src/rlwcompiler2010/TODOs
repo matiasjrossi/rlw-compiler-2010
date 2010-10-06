@@ -15,7 +15,7 @@ se refiere al token FOR. Tampoco está en la gramática, claro.
  0 conflicts detected (0 expected).
  Code written to "Parser.java", and "Symbols.java".
 
-
+para el mail:
 - Se modifico la forma de eleminar espacios; para ello, adoptandos la misma politica que con los comentarios, se creo un nuevo estado "blanks" que encarga de ello.
 - Se cambio el metodo de lectura del archivo fuente, ahora se realiza de a un caracter por vez.
 - Se corrigio la conclusion del informe sobre el generador de parsers para mantener la coherencia con el codigo.
