@@ -19,14 +19,14 @@ class FloatTokenizer extends AVTokenizer {
 
     public Token build(String ss) {
         String s = ss.replaceAll("[ \\t]", "");
-        String regex = "^([0-9]+\\.*[0-9]*|\\.[0-9]+)(E-?[0-9]+)*";
+     //   String regex = "^([0-9]+\\.*[0-9]*|\\.[0-9]+)(E-?[0-9]+)*";
         try {
-            if (s.matches(regex)) {
+       //     if (s.matches(regex)) {
                 Float Num = new Float(s);
                 if (Num==0 ||(MIN_VALUE < Num && Num < MAX_VALUE)) {
                     return new Token(ss, Symbols.CONSTANT);
                 }                    
-            }
+         //   }
         } catch (Exception e) { }
 
         if (!s.isEmpty())
