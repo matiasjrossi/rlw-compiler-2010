@@ -246,12 +246,10 @@ public class Rlwlexer implements Scanner {
             if (s != null) {
                 if (ts.containsKey(s)) {
                     ts.get(s).addOccurrence(l, i);
-                    System.out.println(l + ":" + i + " Agregado nueva ocurrencia del simbolo: " + s);
                 } else {
                     SymbolData sd = new SymbolData();
                     sd.addOccurrence(l, i);
                     ts.put(s, sd);
-                    System.out.println(l + ":" + i + " Agregado nuevo simbolo a la tabla: " + s);
                 }
             }
             tokenStrip.add(t);
@@ -260,9 +258,10 @@ public class Rlwlexer implements Scanner {
     }
 
     public void printTS(){
-        System.out.println("LA PUTA TABLA DE SIMBOLOS");
+        System.out.println("TABLA DE SIMBOLOS");
         for(String s: ts.keySet()){
-            System.out.println(s+" "+ts.get(s).toString());
+            System.out.println("    "+s+" "+ts.get(s).toString());
         }
     }
 }
+
