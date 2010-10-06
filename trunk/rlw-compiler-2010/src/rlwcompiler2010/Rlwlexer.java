@@ -53,7 +53,6 @@ public class Rlwlexer implements Scanner {
         br = new BufferedReader(fr);
 
         //set the automata
-        s0 = new State(null);
         ITokenizer kwt = new KeywordTokenizer(this),
                 idt = new IdTokenizer(this),
                 it = new IntTokenizer(this),
@@ -66,8 +65,10 @@ public class Rlwlexer implements Scanner {
         RCTokenizer rct = new RCTokenizer();
         rct.add(kwt);
         rct.add(idt);
-
-        State kw = new State(rct), //representa Validacion de KeyWords
+        
+        s0 = new State(null);//estado inicial
+        State   blanks= new State(null),//null tokenizer, los espacios se ignoran
+                kw = new State(rct), //representa Validacion de KeyWords
                 id = new State(idt), //representa Validacion de ID
                 integer = new State(it), //representa Validacion de Constante Integer
                 start_div = new State(div),
@@ -75,10 +76,10 @@ public class Rlwlexer implements Scanner {
                 com_great = new State(lct),
                 com_equal = new State(lct),
                 singles = new State(sngt),
-                end_asign = new State(asgt),//FINAL
-                start_asign = new State(new TokenErrorInformer(this,"ERROR: \'-\' expected after")),//null tokenizer estado intermedio asign
-                tsend = new State(st),//HACE FALTA EL TOKENIZER!!!!!!!
-                textstrip = new State(new TokenErrorInformer(this,"ERROR: Incomplete string")),//null token hasta el "
+                end_asign = new State(asgt),
+                start_asign = new State(new TokenErrorInformer(this,"ERROR: \'-\' expected after")),
+                tsend = new State(st),
+                textstrip = new State(new TokenErrorInformer(this,"ERROR: Incomplete string")),
 
                 comment = new State(null),// null tokenaizer los comentarios se ignoran
                 
@@ -106,7 +107,14 @@ public class Rlwlexer implements Scanner {
                 cl = "\\<",
                 ce = "=",
                 sg = "(\\*|\\+|-|;|,|\\(|\\)|\\{|\\})";
-
+//BEG trans de correcciones
+        blanks.addTrans(spa, blanks);
+        blanks.addTrans(bl, blanks);
+        blanks.addTrans(nl, blanks);
+        s0.addTrans(spa, blanks);
+        s0.addTrans(bl, blanks);
+        s0.addTrans(nl, blanks);
+//END
         s0.addTrans(schar, kw);
         s0.addTrans(dig, integer);
         s0.addTrans(goat, floating);
@@ -121,7 +129,7 @@ public class Rlwlexer implements Scanner {
         textstrip.addTrans(ndq, textstrip);
         
         textstrip.addTrans(dq, tsend);
-        start_div.addTrans(sb, comment);//doble barra ->comentario
+        start_div.addTrans(sb, comment);
         comment.addTrans(nnl, comment);
 
         com_less.addTrans(ce, com_equal);// < <> <=
@@ -174,7 +182,7 @@ public class Rlwlexer implements Scanner {
             }
                 l++;
                 s += "\n";
-           
+
         } catch (Exception e) {
     //        e.printStackTrace();
         }
@@ -213,25 +221,28 @@ public class Rlwlexer implements Scanner {
             if (ns != null) { // si tengo transicion, todo va bien
                 strip += c;
                 state = ns;
-            } else {// si no tengo prox estado es final (valido-ERROR)
+            } else {// si no tengo prox estado es final (valido/ERROR)
                 t = makeToken(strip);
                 //corregir index y strip pa que salga andando
-                // el char actual es el que no valida con el estado acutal -> proximo token
+                // el char actual es el que no valida con el estado acutal
+                // forma parte del proximo token
                 strip = String.valueOf(c);
                 // salteo de vacios (solo entre tokens)
-                while (strip.matches("[ \\t\\n]*")) {
-                    if (source == null || source.length() <= index) {
-                        source = nextLine();
-                        index = 0;
-                        if (source == null) {
-                            return t;
-                        }
-                    }
-                    c = source.charAt(index++);
-                    strip = String.valueOf(c);
-                }
+//                while (strip.matches("[ \\t\\n]*")) {
+//                    if (source == null || source.length() <= index) {
+//                        source = nextLine();
+//                        index = 0;
+//                        if (source == null) {
+//                            return t;
+//                        }
+//                    }
+//                    c = source.charAt(index++);
+//                    strip = String.valueOf(c);
+//                }
                 //salta caracteres fallidos ;)
+  //              System.out.println("por pedir el proximo estado a s0("+s0+") con '"+c+"'");
                 state = s0.next(c);
+  //              System.out.println("listo.... next state = "+state);
                 if (state == null) {
                     Logger.get().logOutput("ERROR: Unrecognised token \'" + c + "\'");
                     strip = "";
@@ -263,7 +274,7 @@ public class Rlwlexer implements Scanner {
                 }
             }
             // buscar en tsimbolo
-            //    si no ta agregar
+            //    si no ta -> agregar
             tokenStrip.add(t);
         }
         return t;
