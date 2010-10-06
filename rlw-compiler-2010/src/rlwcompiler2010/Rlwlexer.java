@@ -22,9 +22,8 @@ import java_cup.runtime.Symbol;
 public class Rlwlexer implements Scanner {
 
     private int l = 1; // current line
-//    private int index = 0; // position src file
+    private int index = 0; // position src file
     private String strip = ""; // readed chars "buffer"
-//    private String source; // src ln (from src file)
     private String filePath;
     private State state; // current state
     private State s0; // initial state
@@ -68,7 +67,7 @@ public class Rlwlexer implements Scanner {
         s0 = new State(null);//estado inicial
         State blanks = new State(null),//null tokenizer, los espacios se ignoran
                 kw = new State(rct), //representa Validacion de KeyWords
-//                id = new State(idt), //representa Validacion de ID
+                //                id = new State(idt), //representa Validacion de ID
                 integer = new State(it), //representa Validacion de Constante Integer
                 start_div = new State(div),
                 com_less = new State(lct),
@@ -105,14 +104,9 @@ public class Rlwlexer implements Scanner {
                 cl = "\\<",
                 ce = "=",
                 sg = "(\\*|\\+|-|;|,|\\(|\\)|\\{|\\})";
-//BEG trans de correcciones
-        blanks.addTrans(spa, blanks);
-        blanks.addTrans(bl, blanks);
-        blanks.addTrans(nl, blanks);
         s0.addTrans(spa, blanks);
         s0.addTrans(bl, blanks);
         s0.addTrans(nl, blanks);
-//END
         s0.addTrans(schar, kw);
         s0.addTrans(dig, integer);
         s0.addTrans(goat, floating);
@@ -126,6 +120,10 @@ public class Rlwlexer implements Scanner {
 
         textstrip.addTrans(ndq, textstrip);
 
+        blanks.addTrans(spa, blanks);
+        blanks.addTrans(bl, blanks);
+        blanks.addTrans(nl, blanks);
+
         textstrip.addTrans(dq, tsend);
         start_div.addTrans(sb, comment);
         comment.addTrans(nnl, comment);
@@ -135,12 +133,8 @@ public class Rlwlexer implements Scanner {
         com_great.addTrans(ce, com_equal);// > >=
         start_asign.addTrans(ms, end_asign); // :-
 
-
         kw.addTrans(schar, kw);
         kw.addTrans(dig, kw);
-//        kw.addTrans(dig, id);
-//        id.addTrans(schar, id);
-//       id.addTrans(dig, id);
 
         // lo referido al float es altamente dudoso
         integer.addTrans(dig, integer);
@@ -170,23 +164,6 @@ public class Rlwlexer implements Scanner {
 
         state = s0;
     }
-/*
-    protected String nextLine() {
-        String s = null;
-        try {
-            s = br.readLine();
-            if (s == null) {
-                fr.close();
-                return s;
-            }
-            l++;
-            s += "\n";
-
-        } catch (Exception e) {
-            //        e.printStackTrace();
-        }
-        return s;
-    */
 
     @Override
     public Symbol next_token() throws Exception {
@@ -197,35 +174,24 @@ public class Rlwlexer implements Scanner {
         }
         Logger.get().logDebug("Lexer", "Returning token" + SymbolsHelper.sym2Sting(Symbols.EOF));
         return new Symbol(Symbols.EOF);
-
     }
 
     protected Token nextToken() {
         Token t = null;
 
         while (t == null) {
-//            if (source == null || source.length() <= index) {
-//                source = nextLine();
-//                index = 0;
-//                if (source == null) {
-//                    //Corte de emergencia
-//                    t = makeToken(strip);
-//                    strip = "";
-//                    return t;
-//                }
-//            }
-            char c =' ';//source.charAt(index++);
-           
+            char c = ' ';
             int i = 0;
             try {
                 i = br.read();
                 if (i < 0) {
-                    //Corte de emergencia
+                    //EOF
                     t = makeToken(strip);
                     strip = "";
                     return t;
                 }
                 c = (char) i;
+                index++;
             } catch (Exception e) {
                 System.out.println("WTF???? i:" + i + " c:" + c + " e:" + e);
                 //Corte de emergencia
@@ -233,10 +199,12 @@ public class Rlwlexer implements Scanner {
                 strip = "";
                 return t;
             }
-            if(String.valueOf(c).matches("(\\r\\n|\\n)"))
+            if (String.valueOf(c).matches("(\\r\\n|\\n)")) {
                 l++;
-            State ns = state.next(c);
+                index = 0;
+            }
 
+            State ns = state.next(c);
             if (ns != null) { // si tengo transicion, todo va bien
                 strip += c;
                 state = ns;
@@ -246,22 +214,7 @@ public class Rlwlexer implements Scanner {
                 // el char actual es el que no valida con el estado acutal
                 // forma parte del proximo token
                 strip = String.valueOf(c);
-                // salteo de vacios (solo entre tokens)
-//                while (strip.matches("[ \\t\\n]*")) {
-//                    if (source == null || source.length() <= index) {
-//                        source = nextLine();
-//                        index = 0;
-//                        if (source == null) {
-//                            return t;
-//                        }
-//                    }
-//                    c = source.charAt(index++);
-//                    strip = String.valueOf(c);
-//                }
-                //salta caracteres fallidos ;)
-                //              System.out.println("por pedir el proximo estado a s0("+s0+") con '"+c+"'");
                 state = s0.next(c);
-                //              System.out.println("listo.... next state = "+state);
                 if (state == null) {
                     Logger.get().logOutput("ERROR: Unrecognised token \'" + c + "\'");
                     strip = "";
@@ -278,21 +231,19 @@ public class Rlwlexer implements Scanner {
 
     private Token makeToken(String strip) {
         Token t = state.getToken(strip);
-        Iterator<String> it;
         if (t != null) {
             if (t.get() == Symbols.IDENTIFIER) {
-                it = ts.keySet().iterator();
-                String alphaString = null;
-                while (it.hasNext() && alphaString == null) {
-                    alphaString = it.next();
-                    if (t.matches(alphaString)) {
-                    } else {
-                        alphaString = null;
-                    }
+                if (ts.containsKey(t.getString())) {
+                    ts.get(t.getString()).addOccurrence(l, index);
+                    System.out.println(l + ":" + index + " Agregado nueva ocurrencia del simbolo: " + t.getString());
+                } else {
+                    SymbolData sd = new SymbolData();
+                    sd.addOccurrence(l, index);
+                    ts.put(t.getString(), sd);
+                    System.out.println(l + ":" + index + "Agregado nuevo simbolo a la tabla: " + t.getString());
                 }
             }
-            // buscar en tsimbolo
-            //    si no ta -> agregar
+
             tokenStrip.add(t);
         }
         return t;
