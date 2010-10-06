@@ -17,13 +17,8 @@ se refiere al token FOR. Tampoco está en la gramática, claro.
  Code written to "Parser.java", and "Symbols.java".
 </JR'S STUFF>
 
-- (REVISAR) No se muestra la tabla de símbolos al salir. Es más, compilé y probé
-el programa corriendo. Por lo que vi, los identificadores ni las constantes
-están siendo almacenadas en ninguna estructura como la de una tabla de símbolos.
-Hay una variable "ts" en el analizador lexico. Pero nunca es llenada.
-(solucion):- my bad, lo solociono facil, lo unico que no se, es que datos meterle aparte del token...
-
 - (REVISAR) Esta forma de eliminar el espaciado es incorrecta:
+(solucion)-: agregue un estado blanks sin tokenizer (misma politica que comentarios)
 DONE! not fully tested and never will
 
 No es bueno que el archivo se lea por línea: método nextLine(). Sino que debería
@@ -45,8 +40,6 @@ correctamente en el compilador.
     Es verdad que el segundo estado no es realmente necesario... se podria sacar
     y ya lo saque, del codigo y del informe!!!!!
     solo resta corregir el grafo.png,
-    se lo derivo a algun taliban del codigo que use esa cosa linux
-
 
 - (COMENTARIO) No hace falta verificar en las clases Tokenizer si el buffer en
 el analizador léxico está bien constituido mediante código como:
@@ -55,3 +48,24 @@ el analizador léxico está bien constituido mediante código como:
 - (COMENTARIO) No es buena idea calcular la siguiente transición de estados
 utilizando expresiones regulares.
 (solucion):- negociar, es realmente importante la optimizacion en un trabajo didactico-conceptual?
+
+- (REVISAR) No se muestra la tabla de símbolos al salir. Es más, compilé y probé
+el programa corriendo. Por lo que vi, los identificadores ni las constantes
+están siendo almacenadas en ninguna estructura como la de una tabla de símbolos.
+Hay una variable "ts" en el analizador lexico. Pero nunca es llenada.
+(solucion):- my bad, lo solociono facil, lo unico que no se, es que datos meterle aparte del token...
+
+CORREGIR GRAFO EN EL INFORME!
+    agregar estado blanks, sacar estado id
+    se lo derivo a algun taliban del codigo que use esa cosa linux
+
+efecto colateral de las correcciones?
+[...]
+Identificadores:
+
+   h, unnombremuylargo1,unnombremuylargo2,a,b123;  123b
+[...]
+At line 12: ERROR: '-' expected after ':'
+At line 13: ERROR: Unexpected identifier: h   <-------------- este error esta mal, no?
+At line 13: WARNING: Identifiers must be shorter than 15 characters: 'unnombremuylargo1'.
+         Trimming to: 'unnombremuylarg'.
