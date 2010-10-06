@@ -1,6 +1,6 @@
 digraph finite_state_machine {
 	rankdir=LR;
-	node [shape = doublecircle,fixedsize=true,width=2]; KW ID INT FLOAT FLOAT_EXP END_ASIGN START_DIV COM_GREAT COM_LESS COM_EQUAL SINGLES TSEND;
+	node [shape = doublecircle,fixedsize=true,width=2]; KW BLANK INT FLOAT FLOAT_EXP END_ASIGN START_DIV COM_GREAT COM_LESS COM_EQUAL SINGLES TSEND;
 	node [shape=circle,fixedsize=true,width=2];
 	INIT -> KW [ label = "[a-zA-Z]" ];
 	INIT -> INT [ label = "[0-9]" ];
@@ -12,6 +12,7 @@ digraph finite_state_machine {
 	INIT -> COM_EQUAL [ label = "=" ];
 	INIT -> SINGLES [ label= "* + - ; , ( ) { }" ];
 	INIT -> TEXT_STRIP [ label = "\"" ];
+        INIT -> BLANK [ label = "(\\s|\\t|\\r\\n|\\n)" ];
 	TEXT_STRIP -> TEXT_STRIP [ label = "NOT(\")" ];
 	TEXT_STRIP -> TSEND [ label = "\"" ];
 	START_DIV -> COMMENT [ label = "/" ];
@@ -20,9 +21,8 @@ digraph finite_state_machine {
 	COM_LESS -> COM_EQUAL [ label = ">" ];
 	COM_GREAT -> COM_EQUAL [ label = "=" ];
 	START_ASIGN -> END_ASIGN [ label = "-" ];
-	KW -> ID [ label = "[0-9]" ];
-	KW -> KW [ label = "[a-zA-Z]" ];
-	ID -> ID [ label = "[a-zA-Z0-9]" ];
+	KW -> KW [ label = "[a-zA-Z0-9]" ];
+        BLANK -> BLANK [ label = "(\\s|\\t|\\r\\n|\\n)"];
 	INT -> INT [ label = "[0-9]" ];
 	INT -> FLOAT [ label = "." ];
 	INT -> PRE_FLOAT_EXP [ label = "E" ];
