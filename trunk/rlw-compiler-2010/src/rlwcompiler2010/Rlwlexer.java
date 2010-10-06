@@ -258,4 +258,11 @@ public class Rlwlexer implements Scanner {
         }
         return t;
     }
+
+    public void printTS(){
+        System.out.println("LA PUTA TABLA DE SIMBOLOS");
+        for(String s: ts.keySet()){
+            System.out.println(s+" "+ts.get(s).toString());
+        }
+    }
 }

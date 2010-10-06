@@ -28,5 +28,11 @@ class SymbolData {
     void addOccurrence(int l, int index){
         occurrence.add(new Pos(l,index));
     }
-
+    @Override
+    public String toString(){
+        String s = "ocurrencias:";
+        for(Pos p:occurrence)
+            s+=" "+p.getLine()+":"+p.getLinePos();
+        return s;
+    }
 }

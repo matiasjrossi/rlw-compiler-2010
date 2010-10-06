@@ -17,7 +17,6 @@ public class Compiler {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-       
                 
         if (args.length < 1)
             System.out.println("You need to specify the file to compile.");
@@ -45,6 +44,7 @@ public class Compiler {
                 Logger.get().showException(e);
                 Logger.get().logOutput("Uh Oh! Something went horribly wrong, please debug.");
             }
+            Rlwlexer.getLexer().printTS();
         }
        
     }
