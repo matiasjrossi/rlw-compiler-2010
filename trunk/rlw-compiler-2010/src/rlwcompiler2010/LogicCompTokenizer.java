@@ -17,10 +17,10 @@ class LogicCompTokenizer extends AVTokenizer {
     
     public Token build(String s) {
 
-        String regex = "(\\<|\\>|=|\\>=|\\<=|\\<\\>)";
+ //       String regex = "(\\<|\\>|=|\\>=|\\<=|\\<\\>)";
 
-        if (s.matches(regex))
+  //      if (s.matches(regex))
             return new Token(s, Symbols.COMPARATOR);
-        return null;
+  //      return null;
     }
 }

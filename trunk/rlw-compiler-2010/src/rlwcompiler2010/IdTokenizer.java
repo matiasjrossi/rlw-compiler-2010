@@ -15,8 +15,8 @@ public class IdTokenizer extends AVTokenizer {
 
     public Token build(String s) {
         //Check for charcter start and lenght
-        String regex = "^[a-zA-Z][a-zA-Z0-9]*";
-        if (s.matches(regex)) {
+       // String regex = "^[a-zA-Z][a-zA-Z0-9]*";
+        //if (s.matches(regex)) {
             if (!s.isEmpty() && s.length() <= 15) {
                 return new Token(s, Symbols.IDENTIFIER);
             } else {
@@ -25,10 +25,10 @@ public class IdTokenizer extends AVTokenizer {
                         "\'" + s + "\'.\n         Trimming to: \'" + sub +"\'.");
                 return new Token(sub, Symbols.IDENTIFIER);
             }            
-        } else {
-            notify("ERROR: Identifiers are not allowed to start with \'" + s + "\'");
-        }
-        return null;
+        //} else {
+        //    notify("ERROR: Identifiers are not allowed to start with \'" + s + "\'");
+        //}
+       // return null;
     }
 
     public IdTokenizer(Rlwlexer lex)

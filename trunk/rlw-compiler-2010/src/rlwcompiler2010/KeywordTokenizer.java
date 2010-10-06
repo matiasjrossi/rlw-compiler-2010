@@ -5,8 +5,6 @@
 package rlwcompiler2010;
 
 import java.util.HashMap;
-import org.xml.sax.ext.LexicalHandler;
-
 /**
  *
  * @author cristian
