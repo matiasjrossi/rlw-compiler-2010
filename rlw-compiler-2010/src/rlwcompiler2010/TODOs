@@ -56,7 +56,7 @@ Hay una variable "ts" en el analizador lexico. Pero nunca es llenada.
 (solucion):- my bad, lo solociono facil, lo unico que no se, 
     es que @#$%& datos meterle aparte del token...
     le meti las occurrencias por ahora.....
-
+    pseudo-DONE!
 
 CORREGIR GRAFO EN EL INFORME!
     agregar estado blanks, sacar estado id
