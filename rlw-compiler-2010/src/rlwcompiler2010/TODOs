@@ -23,8 +23,9 @@ para el mail:
 - Se quitaron chequeos innecesarios en los distintos Tokenizers.
 - Se cargan a la tabla de simbolos los distintos identificadores y constantes, registrando la ubicacion de sus apariciones.
 - No se modifico el calculo de transiciones, seguimos utilizando expresiones regulares, 
-ya que si bien implican un costo computacional extra, periten una mayor transparencia de la logica 
-que se considero más importante que la optimizacion del codigo para un trabajo academico.
+ya que si bien es cierto que implican un costo computacional extra,
+periten una mayor transparencia de la logica y consideramos que para un trabajo academico
+es más importante la claridad que la optimizacion del codigo.
 
 CORREGIR GRAFO EN EL INFORME!
     agregue estado blanks, sacar estado id
