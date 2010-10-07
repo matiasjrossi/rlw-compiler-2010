@@ -14,21 +14,3 @@ se refiere al token FOR. Tampoco está en la gramática, claro.
  0 productions never reduced.
  0 conflicts detected (0 expected).
  Code written to "Parser.java", and "Symbols.java".
-
-para el mail:
-- Se modifico la forma de eleminar espacios; para ello, adoptandos la misma politica que con los comentarios, se creo un nuevo estado "blanks" que encarga de ello.
-- Se cambio el metodo de lectura del archivo fuente, ahora se realiza de a un caracter por vez.
-- Se corrigio la conclusion del informe sobre el generador de parsers para mantener la coherencia con el codigo.
-- Se fusionaron los estados de deteccion de identificadores y palabras reservadas, simplificando el automata.
-- Se quitaron chequeos innecesarios en los distintos Tokenizers.
-- Se cargan a la tabla de simbolos los distintos identificadores y constantes, registrando la ubicacion de sus apariciones.
-- No se modifico el calculo de transiciones, seguimos utilizando expresiones regulares, 
-ya que si bien es cierto que implican un costo computacional extra,
-periten una mayor transparencia de la logica y consideramos que para un trabajo academico
-es más importante la claridad que la optimizacion del codigo.
-
-CORREGIR GRAFO EN EL INFORME!
-    agregue estado blanks, sacar estado id
-    le derivo a algun taliban del codigo que use esa cosa de linux
-    que regenere el png y lo meta en el informe
-

@@ -17,7 +17,7 @@ public class Compiler {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-                
+           
         if (args.length < 1)
             System.out.println("You need to specify the file to compile.");
         else {
