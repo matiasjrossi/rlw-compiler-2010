@@ -25,4 +25,7 @@ if (foo < 0) {
 
 print("i'm outside the scope");
 
-
+for (i :- 18; i < foo; 14) {
+    print("This is inside a loop");
+    bar :- bar + i;
+}
