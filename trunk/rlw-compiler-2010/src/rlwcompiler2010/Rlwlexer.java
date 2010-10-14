@@ -20,7 +20,6 @@ import java_cup.runtime.Symbol;
  * @author cristian
  */
 public class Rlwlexer implements Scanner {
-
     private int l = 1; // current line
     private int index = 1; // position in line
     private String strip = ""; // readed chars "buffer"
