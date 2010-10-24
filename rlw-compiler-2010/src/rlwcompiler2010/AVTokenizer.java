@@ -5,7 +5,6 @@
 package rlwcompiler2010;
 
 /**
- *
  * @author cristian
  */
 public abstract class AVTokenizer implements ITokenizer {
