@@ -1,4 +1,4 @@
-    /*
+   /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -25,7 +25,8 @@ public class Rlwlexer implements Scanner {
     private String strip = ""; // readed chars "buffer"
     private String filePath;
     private State state; // current state
-    private State s0; // initial state
+    private State s0,// initial state
+            blanks,comment;
     private Hashtable<String, SymbolData> ts;
     private Vector<Token> tokenStrip;
     private FileReader fr;
@@ -64,9 +65,10 @@ public class Rlwlexer implements Scanner {
         rct.add(idt);
 
         s0 = new State(null);//estado inicial
-        State blanks = new State(null),//null tokenizer, los espacios se ignoran
-                kw = new State(rct), //representa Validacion de KeyWords
-                //                id = new State(idt), //representa Validacion de ID
+        blanks =  new State(null);//null tokenizer, los espacios se ignoran
+        comment = new State(null);// null tokenaizer los comentarios se ignoran
+
+        State   kw = new State(rct), //representa Validacion de KeyWords
                 integer = new State(it), //representa Validacion de Constante Integer
                 start_div = new State(div),
                 com_less = new State(lct),
@@ -77,8 +79,6 @@ public class Rlwlexer implements Scanner {
                 start_asign = new State(new TokenErrorInformer(this, "ERROR: \'-\' expected after")),
                 tsend = new State(st),
                 textstrip = new State(new TokenErrorInformer(this, "ERROR: Incomplete string")),
-                comment = new State(null),// null tokenaizer los comentarios se ignoran
-
                 floating = new State(sft),
                 pmsfloatexp = new State(new TokenErrorInformer(this, "ERROR: Unrecognised sequence (might be a float constant?)")),
                 post_intspace = new State(it),
@@ -103,9 +103,8 @@ public class Rlwlexer implements Scanner {
                 cl = "\\<",
                 ce = "=",
                 sg = "(\\*|\\+|-|;|,|\\(|\\)|\\{|\\})";
-        s0.addTrans(spa, blanks);
+
         s0.addTrans(bl, blanks);
-        s0.addTrans(nl, blanks);
         s0.addTrans(schar, kw);
         s0.addTrans(dig, integer);
         s0.addTrans(goat, floating);
@@ -119,9 +118,7 @@ public class Rlwlexer implements Scanner {
 
         textstrip.addTrans(ndq, textstrip);
 
-        blanks.addTrans(spa, blanks);
         blanks.addTrans(bl, blanks);
-        blanks.addTrans(nl, blanks);
 
         textstrip.addTrans(dq, tsend);
         start_div.addTrans(sb, comment);
@@ -135,7 +132,6 @@ public class Rlwlexer implements Scanner {
         kw.addTrans(schar, kw);
         kw.addTrans(dig, kw);
 
-        // lo referido al float es altamente dudoso
         integer.addTrans(dig, integer);
         integer.addTrans(goat, floating);
         integer.addTrans(exp, pre_floatexp);
@@ -213,6 +209,9 @@ public class Rlwlexer implements Scanner {
                     Logger.get().logOutput("ERROR: Unrecognised token \'" + c + "\'");
                     strip = "";
                     state = s0;
+                }else if(state==comment||state==blanks){
+                    //limpiamos buffer para ahorrar memoria
+                    strip = "";
                 }
             }
             // corregir index
@@ -263,4 +262,3 @@ public class Rlwlexer implements Scanner {
         }
     }
 }
-
