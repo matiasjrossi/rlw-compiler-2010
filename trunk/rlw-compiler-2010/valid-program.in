@@ -7,6 +7,9 @@ float bar, baz;
 //This is an assignment statement
 foo :- 156;
 
+//This is an assignment using a signed constant
+fubar :- -666;
+
 //This is a selection
 if (foo < 0) {
    bar :- 156.4E19;

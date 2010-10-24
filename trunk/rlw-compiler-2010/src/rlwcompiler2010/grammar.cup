@@ -6,7 +6,7 @@ import java_cup.runtime.*;
 terminal ASSIGNMENTSYMBOL, BY, COMMA, COMPARATOR, CONSTANT, ELSE, IDENTIFIER, IF, LBRACKET, LCURLY, MINUS, PLUS, RBRACKET, RCURLY, SEMICOLON, TIMES, TYPE, PRINT, FOR;
 
 /* Non terminals */
-non terminal program, assignment, block, declaration, declarations, expresion, factor, identifiers, predicate, print, scope, selection, statement, statements, term, firstlevelstatement, firstlevelstatements, loop, loopstart, loopcheck, loopafter;
+non terminal program, assignment, block, declaration, declarations, expresion, factor, identifiers, predicate, print, scope, selection, statement, statements, term, firstlevelstatement, firstlevelstatements, loop, loopstart, loopcheck, loopafter, sconstant;
 
 
 program ::= declarations firstlevelstatements {: Logger.get().logDebug("Parser", "Using rule: program ::= declarations firstlevelstatements"); :}
@@ -16,7 +16,6 @@ program ::= declarations firstlevelstatements {: Logger.get().logDebug("Parser",
 declarations ::= declarations declaration {: Logger.get().logDebug("Parser", "Using rule: declarations ::= declarations declaration"); :}
         | declaration {: Logger.get().logDebug("Parser", "Using rule: declarations ::= declaration"); :}
 	;
-
 
 declaration ::= TYPE identifiers SEMICOLON {: Logger.get().logDebug("Parser", "Using rule: declaration ::= TYPE identifiers SEMICOLON"); :}
 	;
@@ -61,7 +60,7 @@ term ::= term TIMES factor {: Logger.get().logDebug("Parser", "Using rule: term 
 	;
 
 factor ::= IDENTIFIER {: Logger.get().logDebug("Parser", "Using rule: factor ::= IDENTIFIER"); :}
-        | CONSTANT {: Logger.get().logDebug("Parser", "Using rule: factor ::= CONSTANT"); :}
+        | sconstant {: Logger.get().logDebug("Parser", "Using rule: factor ::= sconstant"); :}
 	;
 
 selection ::= IF LBRACKET predicate RBRACKET block ELSE block {: Logger.get().logDebug("Parser", "Using rule: selection ::= IF LBRACKET predicate RBRACKET block ELSE block"); :}
@@ -74,23 +73,27 @@ block ::= statement {: Logger.get().logDebug("Parser", "Using rule: block ::= st
 predicate ::= expresion COMPARATOR expresion {: Logger.get().logDebug("Parser", "Using rule: predicate ::= expresion COMPARATOR expresion"); :}
 	;
 
-print ::= PRINT LBRACKET CONSTANT RBRACKET SEMICOLON {: Logger.get().logDebug("Parser", "Using rule: print ::= PRINT LBRACKET CONSTANT RBRACKET SEMICOLON"); :}
+print ::= PRINT LBRACKET sconstant RBRACKET SEMICOLON {: Logger.get().logDebug("Parser", "Using rule: print ::= PRINT LBRACKET sconstant RBRACKET SEMICOLON"); :}
 	;
 
 loop ::= FOR LBRACKET loopstart SEMICOLON loopcheck SEMICOLON loopafter RBRACKET block {: Logger.get().logDebug("Parser", "Using rule: loop ::= FOR LBRACKET loopstart SEMICOLON loopcheck SEMICOLON loopafter RBRACKET block"); :}
 	;
 
 loopstart ::= IDENTIFIER ASSIGNMENTSYMBOL IDENTIFIER {: Logger.get().logDebug("Parser", "Using rule: loopstart ::= IDENTIFIER ASSIGNMENTSYMBOL IDENTIFIER"); :}
-	| IDENTIFIER ASSIGNMENTSYMBOL CONSTANT {: Logger.get().logDebug("Parser", "Using rule: loopstart ::= IDENTIFIER ASSIGNMENTSYMBOL CONSTANT"); :}
+	| IDENTIFIER ASSIGNMENTSYMBOL sconstant {: Logger.get().logDebug("Parser", "Using rule: loopstart ::= IDENTIFIER ASSIGNMENTSYMBOL sconstant"); :}
 	;
 
 loopcheck ::= IDENTIFIER COMPARATOR IDENTIFIER {: Logger.get().logDebug("Parser", "Using rule: loopcheck ::= IDENTIFIER COMPARATOR IDENTIFIER"); :}
-	| IDENTIFIER COMPARATOR CONSTANT {: Logger.get().logDebug("Parser", "Using rule: loopcheck ::= IDENTIFIER COMPARATOR CONSTANT"); :}
+	| IDENTIFIER COMPARATOR sconstant {: Logger.get().logDebug("Parser", "Using rule: loopcheck ::= IDENTIFIER COMPARATOR sconstant"); :}
 	;
 
 loopafter ::= IDENTIFIER {: Logger.get().logDebug("Parser", "Using rule: loopafter ::= IDENTIFIER"); :}
-	| CONSTANT {: Logger.get().logDebug("Parser", "Using rule: loopafter ::= CONSTANT"); :}
+	| sconstant {: Logger.get().logDebug("Parser", "Using rule: loopafter ::= sconstant"); :}
 	;
+
+sconstant ::= MINUS CONSTANT {: Logger.get().logDebug("Parser", "Using rule: sconstant ::= MINUS CONSTANT"); :}
+        | CONSTANT {: Logger.get().logDebug("Parser", "Using rule: sconstant ::= CONSTANT"); :}
+        ;
 
 
 /* Error recovery productions */
