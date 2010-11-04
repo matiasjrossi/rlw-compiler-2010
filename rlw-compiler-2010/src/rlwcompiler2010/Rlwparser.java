@@ -9,7 +9,6 @@ import java_cup.runtime.Scanner;
 import java_cup.runtime.Symbol;
 
 /**
- *
  * @author matias
  */
 public class Rlwparser extends Parser {
