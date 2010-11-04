@@ -38,15 +38,20 @@ public class Rlwicgenerator {
     public void add(Object s){
         ic.add(new Icelement(s));
     }
+
+    public void add(int i,Object s){
+        ic.get(i).set(ic.size());
+    }
+
     public void addVoid(){
         voids.add(0,ic.size());
         ic.add(new Icelement());
     }
 
-    public void fillVoid(){
+    public int fillVoid(){
         if(voids.isEmpty())
              throw new RuntimeException("No voids to fill");
-        ic.get(voids.remove(0)).set(ic.size());
+        return voids.remove(0);
     }
 
     public Vector<Icelement> getIC(){
