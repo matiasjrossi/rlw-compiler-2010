@@ -93,13 +93,23 @@ public class ParserHelper {
     }
 
     void operator(String op) {
-        ReversePolishNotation.get().addOp(op);
+        try {
+              ReversePolishNotation.get().addOp(op);
+        } catch (Exception e) {
+            failed = true;
+        }
     }
 
     void unaryMinus(String operand) {
         if (!SymbolsTable.get().containsKey("-" + operand)) {
             if (SymbolsTable.get().containsKey(operand)) {
-                SymbolsTable.get().put("-" + operand, new SymbolData(SymbolsTable.get().get(operand)));
+                if (SymbolsTable.get().get(operand).getType() != SymbolData.DataType.STRING)
+                    SymbolsTable.get().put("-" + operand, new SymbolData(SymbolsTable.get().get(operand)));
+                else
+                {
+                    Logger.get().logOutput("Invalid unary minus operation in String constant");
+                    failed = true;
+                }
             } else {
                 throw new UnsupportedOperationException("!!!WRONG CONSTANT?!!!");
             }
@@ -113,19 +123,23 @@ public class ParserHelper {
         } else if (SymbolsTable.get().containsKey(global(operand))) {
             ReversePolishNotation.get().addSym(SymbolsTable.get().get(global(operand)).getId());
         } else {
-            Logger.get().logOutput("Unknown symbol for LHS: \"" + operand + "\"");
+            Logger.get().logOutput("Unknown symbol for LVALUE: \"" + operand + "\"");
             failed = true;
         }
         operator("ASS");
     }
 
     void comparator(String op) {
-        if (op.equals("=")) ReversePolishNotation.get().addOp("EQ");
-        else if (op.equals("<>")) ReversePolishNotation.get().addOp("DIS");
-        else if (op.equals("<")) ReversePolishNotation.get().addOp("LT");
-        else if (op.equals("<=")) ReversePolishNotation.get().addOp("LE");
-        else if (op.equals(">")) ReversePolishNotation.get().addOp("GT");
-        else if (op.equals(">=")) ReversePolishNotation.get().addOp("GE");
+        try {
+            if (op.equals("=")) ReversePolishNotation.get().addOp("EQ");
+            else if (op.equals("<>")) ReversePolishNotation.get().addOp("DIS");
+            else if (op.equals("<")) ReversePolishNotation.get().addOp("LT");
+            else if (op.equals("<=")) ReversePolishNotation.get().addOp("LE");
+            else if (op.equals(">")) ReversePolishNotation.get().addOp("GT");
+            else if (op.equals(">=")) ReversePolishNotation.get().addOp("GE");
+        } catch (Exception e) {
+            failed = true;
+        }
     }
 
 }

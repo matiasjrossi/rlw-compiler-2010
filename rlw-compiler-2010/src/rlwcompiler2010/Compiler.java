@@ -20,6 +20,7 @@ public class Compiler {
             System.out.println("You need to specify the file to compile.");
         else {
             // This makes the compiler be verbose
+
             //Logger.get().dontBeShy();
             //Logger.get().mute("Lexer");
             //Logger.get().mute("Compiler");

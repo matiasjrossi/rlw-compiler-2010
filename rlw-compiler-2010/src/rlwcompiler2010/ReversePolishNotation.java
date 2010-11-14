@@ -57,7 +57,11 @@ public class ReversePolishNotation {
 
     }
 
-    public void addOp(String op) {
+    public void addOp(String op) throws Exception {
+        if (op.equals("PRN") && SymbolsTable.get().get(SymbolsTable.get().getById(strip.lastElement()-offset)).getType() != SymbolData.DataType.STRING) {
+            Logger.get().logOutput("Cannot print non-string symbol");
+            throw new Exception();
+        }
         strip.add(opCode(op));
     }
 
