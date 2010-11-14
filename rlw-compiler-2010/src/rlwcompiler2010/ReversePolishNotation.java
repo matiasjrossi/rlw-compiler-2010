@@ -14,12 +14,7 @@ import java.util.Vector;
 public class ReversePolishNotation {
 
     private ReversePolishNotation() {
-        operations.add("ADD");
-        operations.add("MUL");
-        operations.add("DIV");
-        operations.add("SUB");
-        operations.add("ASS");
-        operations.add("PRN");
+        fillOperations();
     }
 
 
@@ -35,6 +30,29 @@ public class ReversePolishNotation {
 
     private Vector<Integer> strip = new Vector<Integer>();
     private Vector<String> operations = new Vector<String>();
+
+    private void fillOperations() {
+        //Arithmetic binary operators: Take two from stack, put the result in the stack
+        operations.add("ADD");
+        operations.add("MUL");
+        operations.add("DIV");
+        operations.add("SUB");
+        //Comparators: Take the top from stack and compare it to the new top (after taking it out). Then push '0' if false or any other value if true.
+        operations.add("EQ");
+        operations.add("DIS");
+        operations.add("LT");
+        operations.add("GT");
+        operations.add("LE");
+        operations.add("GE");
+
+
+        operations.add("ASS"); //Two "unary steps" operator: Takes the destination address from stack, then takes the value from stack.
+        operations.add("PRN"); //Unary operator: Takes top of the stack
+
+        operations.add("JMP"); //
+        operations.add("JIF");
+
+    }
 
     public void addOp(String op) {
         strip.add(opCode(op));

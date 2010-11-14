@@ -70,7 +70,7 @@ block ::= statement {: Logger.get().logDebug("Parser", "Using rule: block ::= st
         | LCURLY statements RCURLY {: Logger.get().logDebug("Parser", "Using rule: block ::= LCURLY statements RCURLY"); ParserHelper.get().multiStatementBlockClosed(); :}
 	;
 
-predicate ::= expresion COMPARATOR expresion {: Logger.get().logDebug("Parser", "Using rule: predicate ::= expresion COMPARATOR expresion"); :}
+predicate ::= expresion COMPARATOR:c expresion {: Logger.get().logDebug("Parser", "Using rule: predicate ::= expresion COMPARATOR expresion"); ParserHelper.get().comparator(c.toString()); :}
 	;
 
 print ::= PRINT LBRACKET sconstant RBRACKET SEMICOLON {: Logger.get().logDebug("Parser", "Using rule: print ::= PRINT LBRACKET sconstant RBRACKET SEMICOLON"); ParserHelper.get().operator("PRN"); :}
