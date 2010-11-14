@@ -48,6 +48,7 @@ public class SymbolsTable {
             output += data.get(s).getId().toString() + "  ";
             output += data.get(s).printType();
             output += ": " + s;
+            if (data.get(s).isConstant()) output += "             CONSTANT ";
             output += '\n';
         }
         return output;
