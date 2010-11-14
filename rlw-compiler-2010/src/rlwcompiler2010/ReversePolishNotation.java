@@ -74,7 +74,7 @@ public class ReversePolishNotation {
         String output = "\n\nPolaca Inversa:\n";
 
         for (Integer i: strip) {
-            output += (i<offset?operation(i):i-offset) + "; ";
+            output += (i<offset?operation(i):SymbolsTable.get().getById(i-offset)) + "; ";
         }
 
         return output;

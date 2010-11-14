@@ -5,7 +5,9 @@
 
 package rlwcompiler2010;
 
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -65,4 +67,7 @@ public class SymbolsTable {
         return data.containsKey(s);
     }
 
+    public Set<String> keySet() {
+        return new HashSet<String>(data.keySet());
+    }
 }
