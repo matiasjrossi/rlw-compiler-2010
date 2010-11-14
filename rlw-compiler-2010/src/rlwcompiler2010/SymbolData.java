@@ -79,4 +79,14 @@ class SymbolData {
     }
  *
  */
+
+    private boolean constant = false;
+
+    public boolean isConstant() {
+        return constant;
+    }
+
+    public void setConstant() {
+        this.constant = true;
+    }
 }

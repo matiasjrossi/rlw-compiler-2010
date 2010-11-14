@@ -241,6 +241,7 @@ public class Rlwlexer implements Scanner {
                 i=index - t.getLexeme().length();
                 SymbolData sd = new SymbolData();
                 sd.setType(t.getType());
+                sd.setConstant();
                 SymbolsTable.get().put(s, sd);
             }// calcular el numero de columna
 
