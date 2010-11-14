@@ -5,8 +5,6 @@
 
 package rlwcompiler2010;
 
-import java.util.Vector;
-
 /**
  *
  * @author je
@@ -29,16 +27,6 @@ class SymbolData {
 
     public void setId(int i) {
         this.id = i;
-    }
-
-    private Integer address;
-
-    public Integer getAddress() {
-        return address;
-    }
-
-    public void setAddress(Integer address) {
-        this.address = address;
     }
 
     public DataType getType() {
