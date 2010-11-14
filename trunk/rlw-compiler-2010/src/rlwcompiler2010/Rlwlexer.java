@@ -6,8 +6,6 @@ package rlwcompiler2010;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Vector;
 
 
@@ -27,7 +25,6 @@ public class Rlwlexer implements Scanner {
     private State state; // current state
     private State s0,// initial state
             blanks,comment;
-    private Hashtable<String, SymbolData> ts;
     private Vector<Token> tokenStrip;
     private FileReader fr;
     private BufferedReader br;
@@ -44,7 +41,6 @@ public class Rlwlexer implements Scanner {
     private Rlwlexer(String filePath) throws Exception {
         Logger.get().logDebug("Lexer", "Trying to open file \"" + filePath + "\"");
         this.filePath = filePath;
-        this.ts = new Hashtable<String, SymbolData>();
         tokenStrip = new Vector<Token>();
 
         fr = new FileReader(filePath);
@@ -164,8 +160,10 @@ public class Rlwlexer implements Scanner {
     public Symbol next_token() throws Exception {
         Token t = nextToken();
         if (t != null) {
+            if (t.get() == Symbols.LCURLY)
+                ParserHelper.get().curlyOpened();
             Logger.get().logDebug("Lexer", "Returning token " + SymbolsHelper.sym2Sting(t.get()));
-            return new Symbol(t.get(), t.getString());
+            return new Symbol(t.get(), t.getLexeme());
         }
         Logger.get().logDebug("Lexer", "Returning token" + SymbolsHelper.sym2Sting(Symbols.EOF));
         return new Symbol(Symbols.EOF);
@@ -231,34 +229,38 @@ public class Rlwlexer implements Scanner {
 
     private Token makeToken(String strip) {
         Token t = state.getToken(strip);
-        if (t != null) {
+        if (t != null) { //Si es un token válido
             String s = null;
-            int i = -1;
+            int i = -1; //numero de columna
+
             if (t.get() == Symbols.IDENTIFIER) {
-                s = t.getString();
+                s = t.getLexeme();
                 i= index - s.length();
             } else if (t.get() == Symbols.CONSTANT) {
-                s = "CONSTANT_" + t.getString();
-                i=index - t.getString().length();
-            }
-            if (s != null) {
-                if (ts.containsKey(s)) {
-                    ts.get(s).addOccurrence(l, i);
+                s = t.getLexeme();
+                i=index - t.getLexeme().length();
+                SymbolData sd = new SymbolData();
+                sd.setType(t.getType());
+                SymbolsTable.get().put(s, sd);
+            }// calcular el numero de columna
+
+            /*
+            if (s != null) { //Si es id o constante... que asco...
+                if (SymbolsTable.get().containsKey(s)) {
+                    SymbolsTable.get().get(s).addOccurrence(l, i);
                 } else {
                     SymbolData sd = new SymbolData();
                     sd.addOccurrence(l, i);
-                    ts.put(s, sd);
+                    if (t.get() == Symbols.CONSTANT)
+                        sd.setType(t.getType());
+                    SymbolsTable.get().put(s, sd);
                 }
             }
+             *
+             */
             tokenStrip.add(t);
         }
         return t;
     }
 
-    public void printTS(){
-        System.out.println("TABLA DE SIMBOLOS");
-        for(String s: ts.keySet()){
-            System.out.println("    "+s+" "+ts.get(s).toString());
-        }
-    }
 }

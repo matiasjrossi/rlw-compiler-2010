@@ -19,7 +19,9 @@ public class IntTokenizer extends AVTokenizer {
             Integer i = new Integer(s);
             //Check Bounds - 2^15 < x < 2^15 - 1
             if (MIN_VALUE < i && i < MAX_VALUE) {
-                return new Token(s, Symbols.CONSTANT);
+                Token t = new Token(s, Symbols.CONSTANT);
+                t.setType("int");
+                return t;
             }
         } catch (Exception e) {
         }

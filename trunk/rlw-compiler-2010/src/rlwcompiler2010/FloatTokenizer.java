@@ -24,7 +24,9 @@ class FloatTokenizer extends AVTokenizer {
        //     if (s.matches(regex)) {
                 Float Num = new Float(s);
                 if (Num==0 ||(MIN_VALUE < Num && Num < MAX_VALUE)) {
-                    return new Token(ss, Symbols.CONSTANT);
+                    Token t = new Token(ss, Symbols.CONSTANT);
+                    t.setType("float");
+                    return t;
                 }                    
          //   }
         } catch (Exception e) { }

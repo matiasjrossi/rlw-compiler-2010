@@ -12,7 +12,68 @@ import java.util.Vector;
  * @author je
  */
 class SymbolData {
-    class Pos{
+
+    SymbolData(SymbolData other) {
+        this.type = other.type;
+    }
+
+    public enum DataType { INT, FLOAT, STRING }
+
+    private DataType type;
+
+    private Integer id;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(int i) {
+        this.id = i;
+    }
+
+    private Integer address;
+
+    public Integer getAddress() {
+        return address;
+    }
+
+    public void setAddress(Integer address) {
+        this.address = address;
+    }
+
+    public DataType getType() {
+        return type;
+    }
+
+    public String printType() {
+        try {
+        switch(type) {
+            case INT:
+                return "int";
+            case FLOAT:
+                return "float";
+            case STRING:
+                return "string";
+        } } catch (NullPointerException e) {return "!!UNTYPED!!";}
+        return "";
+    }
+
+    public void setType(String s) {
+        if (s.equals("int")) setType(DataType.INT);
+        if (s.equals("float")) setType(DataType.FLOAT);
+        if (s.equals("string")) setType(DataType.STRING);
+    }
+
+    public void setType(DataType type) {
+        this.type = type;
+    }
+
+    public SymbolData() {
+    }
+
+
+
+/*    class Pos{
         private int i,l;
         Pos(int l,int i){
             this.l=l;
@@ -28,11 +89,6 @@ class SymbolData {
     void addOccurrence(int l, int index){
         occurrence.add(new Pos(l,index));
     }
-    @Override
-    public String toString(){
-        String s = "ocurrencias:";
-        for(Pos p:occurrence)
-            s+=" "+p.getLine()+":"+p.getLinePos();
-        return s;
-    }
+ *
+ */
 }

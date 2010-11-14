@@ -20,7 +20,9 @@ public class Compiler {
             System.out.println("You need to specify the file to compile.");
         else {
             // This makes the compiler be verbose
-            Logger.get().dontBeShy();
+            //Logger.get().dontBeShy();
+            //Logger.get().mute("Lexer");
+            //Logger.get().mute("Compiler");
 
             try {
                 // Init the Scanner
@@ -36,13 +38,18 @@ public class Compiler {
             try {
                 Logger.get().logDebug("Compiler", "Now i'm calling parser.parse()...");
                 p.parse();
-                System.out.println("\nFile " + args[0] + " successfully parsed.");
+                System.out.println("\nFile " + args[0] + " successfully parsed. Code generated as \'output.asm\'");
+            } catch (SemanticErrorException e) {
+                System.out.println("\nFile " + args[0] + " contains one or more errors. No code generated ='(");
+            } catch (UnsupportedOperationException e) {
+                System.out.println(e);
             } catch (Exception e) {
                 Logger.get().logDebug("Compiler", "We're screwed! It failed big time!!!");
                 Logger.get().showException(e);
                 Logger.get().logOutput("Uh Oh! Something went horribly wrong, please debug.");
             }
-            Rlwlexer.getLexer().printTS();
+            System.out.println("\n\n\n\n" + SymbolsTable.get().toString());
+            System.out.println(ReversePolishNotation.get().toString());
         }
        
     }
