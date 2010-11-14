@@ -4,6 +4,8 @@
 int foo;
 float bar, baz;
 
+foo :- 105 * 65 + 178 / 3 - 1 ;
+
 //This is an assignment statement
 foo :- - 156;
 

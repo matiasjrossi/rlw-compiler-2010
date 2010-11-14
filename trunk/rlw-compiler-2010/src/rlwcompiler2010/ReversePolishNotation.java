@@ -5,6 +5,7 @@
 
 package rlwcompiler2010;
 
+import java.util.LinkedList;
 import java.util.Vector;
 
 /**
@@ -28,10 +29,10 @@ public class ReversePolishNotation {
 
     /////END OF SINGLETON
 
-    private Vector<Integer> strip = new Vector<Integer>();
+    private LinkedList<PolishItem> strip = new LinkedList<PolishItem>();
     private Vector<String> operations = new Vector<String>();
 
-    public Vector<Integer> getStrip(){
+    public LinkedList<PolishItem> getStrip(){
         return strip;
     }
 
@@ -55,14 +56,16 @@ public class ReversePolishNotation {
         operations.add("JMP"); //
         operations.add("JIF");
 
+        operations.add("LBL");
+
     }
 
     public void addOp(String op) throws Exception {
-        if (op.equals("PRN") && SymbolsTable.get().get(SymbolsTable.get().getById(strip.lastElement()-offset)).getType() != SymbolData.DataType.STRING) {
+        if (op.equals("PRN") && SymbolsTable.get().get(SymbolsTable.get().getById(strip.getLast().cod-offset)).getType() != SymbolData.DataType.STRING) {
             Logger.get().logOutput("Cannot print non-string symbol");
             throw new Exception();
         }
-        strip.add(opCode(op));
+        strip.add(new PolishItem(opCode(op)));
     }
 
     public int opCode(String op) {
@@ -80,8 +83,8 @@ public class ReversePolishNotation {
 
         String output = "\n\nPolaca Inversa:\n";
 
-        for (Integer i: strip) {
-            output += (i<offset?operation(i):SymbolsTable.get().getById(i-offset)) + "; ";
+        for (PolishItem pi: strip) {
+            output += (pi.cod<offset?operation(pi.cod):SymbolsTable.get().getById(pi.cod-offset)) + "; ";
         }
 
         return output;
@@ -89,6 +92,6 @@ public class ReversePolishNotation {
     }
 
     void addSym(Integer id) {
-        strip.add(id + offset);
+        strip.add(new PolishItem(id + offset));
     }
 }

@@ -63,7 +63,7 @@ factor ::= IDENTIFIER:i {: Logger.get().logDebug("Parser", "Using rule: factor :
         | sconstant {: Logger.get().logDebug("Parser", "Using rule: factor ::= sconstant"); :}
 	;
 
-selection ::= IF LBRACKET predicate RBRACKET block ELSE block {: Logger.get().logDebug("Parser", "Using rule: selection ::= IF LBRACKET predicate RBRACKET block ELSE block"); :}
+selection ::= IF LBRACKET predicate RBRACKET block ELSE block {: Logger.get().logDebug("Parser", "Using rule: selection ::= IF LBRACKET predicate RBRACKET block ELSE block"); ParserHelper.get().iF(); :}
 	;
 
 block ::= statement {: Logger.get().logDebug("Parser", "Using rule: block ::= statement"); :}

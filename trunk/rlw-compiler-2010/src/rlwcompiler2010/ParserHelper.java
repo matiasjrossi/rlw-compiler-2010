@@ -74,11 +74,7 @@ public class ParserHelper {
         idBuf.add(id);
     }
 
-    public void assignment(String destinationId) {
-
-    }
-
-    void operand(String operand) {
+    public void operand(String operand) {
         if ((depth != 0) && (SymbolsTable.get().containsKey(mangled(operand)))) {
             ReversePolishNotation.get().addSym(SymbolsTable.get().get(mangled(operand)).getId());
         } else if (SymbolsTable.get().containsKey(global(operand))) {
@@ -92,7 +88,7 @@ public class ParserHelper {
         
     }
 
-    void operator(String op) {
+    public void operator(String op) {
         try {
               ReversePolishNotation.get().addOp(op);
         } catch (Exception e) {
@@ -100,7 +96,7 @@ public class ParserHelper {
         }
     }
 
-    void unaryMinus(String operand) {
+    public void unaryMinus(String operand) {
         if (!SymbolsTable.get().containsKey("-" + operand)) {
             if (SymbolsTable.get().containsKey(operand)) {
                 if (SymbolsTable.get().get(operand).getType() != SymbolData.DataType.STRING)
@@ -117,7 +113,7 @@ public class ParserHelper {
         ReversePolishNotation.get().addSym(SymbolsTable.get().get("-"+operand).getId());
     }
 
-    void assignTo(String operand) {
+    public void assignTo(String operand) {
         if ((depth != 0) && (SymbolsTable.get().containsKey(mangled(operand)))) {
             ReversePolishNotation.get().addSym(SymbolsTable.get().get(mangled(operand)).getId());
         } else if (SymbolsTable.get().containsKey(global(operand))) {
@@ -129,7 +125,7 @@ public class ParserHelper {
         operator("ASS");
     }
 
-    void comparator(String op) {
+    public void comparator(String op) {
         try {
             if (op.equals("=")) ReversePolishNotation.get().addOp("EQ");
             else if (op.equals("<>")) ReversePolishNotation.get().addOp("DIS");
@@ -140,6 +136,14 @@ public class ParserHelper {
         } catch (Exception e) {
             failed = true;
         }
+    }
+
+    public void iF() {
+
+    }
+
+    public void label() {
+        
     }
 
 }
