@@ -119,4 +119,13 @@ public class ParserHelper {
         operator("ASS");
     }
 
+    void comparator(String op) {
+        if (op.equals("=")) ReversePolishNotation.get().addOp("EQ");
+        else if (op.equals("<>")) ReversePolishNotation.get().addOp("DIS");
+        else if (op.equals("<")) ReversePolishNotation.get().addOp("LT");
+        else if (op.equals("<=")) ReversePolishNotation.get().addOp("LE");
+        else if (op.equals(">")) ReversePolishNotation.get().addOp("GT");
+        else if (op.equals(">=")) ReversePolishNotation.get().addOp("GE");
+    }
+
 }
