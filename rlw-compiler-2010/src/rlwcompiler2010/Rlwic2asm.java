@@ -6,7 +6,6 @@
 package rlwcompiler2010;
 
 import java.util.Vector;
-import sun.security.timestamp.TSRequest;
 
 /**
  *
@@ -41,27 +40,60 @@ public class Rlwic2asm {
        ReversePolishNotation rpn = ReversePolishNotation.get();
        Vector<Integer> operands = new Vector<Integer>();
 
+       boolean usingCOOP = false;
        for(Integer i:rpn.getStrip()){
             if(i>rpn.offset){
             //new operand
-                operands.add(0, i);
+                operands.add(0,i);
             }else{
             // new operation
                 String asm = "";
                 String op = rpn.operation(i);
                 if(op.equals("ADD")){
+
                     String d1=null,d2=null;
                     d1= st.getById(operands.remove(0));
-                    SymbolData src = st.get(d1);
-                    String id = (src.isConstant()?"CONSTANT"+src.getId():d2);
-                    asm += "    mov ebx,"+id+"\n";
+                    SymbolData src = st.get(d1),
+                            dest=null;
+                    String id1= src.isConstant()?"CONSTANT"+src.getId():d1
+                            ,id2= null;
                     if(!operands.isEmpty()){
                         d2 = st.getById(operands.remove(0));
-                        SymbolData dest = st.get(d2);
-                        String id2 = (dest.isConstant()?"CONSTANT"+dest.getId():d2);
-                        asm += "    mov eax,"+id2+"\n";
+                        dest = st.get(d2);
+                        id2 = (dest.isConstant()?"CONSTANT"+dest.getId():d2);
                     }
-                    asm += "    add eax,abx\n";
+                    if(d2==null && usingCOOP){
+                        //src al coop
+                        //suma coop
+                    } else if(d2==null &&
+                            !usingCOOP &&
+                            src.getType()==SymbolData.DataType.FLOAT){
+                        //eax al coop
+                        //src a eax
+                        //eax al coop
+                        //suma coop
+                        usingCOOP=true;
+                    } else if(d2==null &&
+                            !usingCOOP &&
+                            src.getType()==SymbolData.DataType.INT){
+                        // src a ebx
+                        // add eax,abx
+                    } else if(d2!=null &&
+                            dest.getType()==SymbolData.DataType.INT &&
+                            src.getType()==SymbolData.DataType.INT){
+                        // dest a eax
+                        // src a ebx
+                        asm += "    add eax,abx\n";
+                    } else if(d2!=null &&
+                            (dest.getType()==SymbolData.DataType.FLOAT ||
+                            src.getType()==SymbolData.DataType.FLOAT)){
+                        // dest a eax
+                        // eax a coop
+                        // src a eax
+                        // eax a coop
+                        // coopadd eax,abx
+                        usingCOOP=true;
+                    }
 
                 }else if(op.equals("MUL")){
 
@@ -96,6 +128,11 @@ public class Rlwic2asm {
                         //  error
                         //else
                         //  no drama
+                    }else{
+                        if(usingCOOP){
+                            usingCOOP=false;
+                            //traer a eax tope pila coop
+                        }
                     }
                     asm += "    mov "+d1+",eax\n";
 
