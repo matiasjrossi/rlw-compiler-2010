@@ -5,7 +5,7 @@
 
 package rlwcompiler2010;
 
-import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  *
@@ -13,28 +13,110 @@ import java.util.Hashtable;
  */
 public class ParserHelper {
 
-    private Hashtable<String, Token> ts;
+    private int currentScope = 0;
 
-    
+    private int depth = 0;
 
-    /*
-     * Singleton
-     *
-     */
+    private Vector<String> idBuf;
 
-    private ParserHelper(Hashtable<String, Token> ts) {
-        this.ts = ts;
+    private boolean failed = false;
 
+    private ParserHelper() {
+        idBuf = new Vector<String>();
     }
 
-    static ParserHelper instance = null;
+    private static ParserHelper instance = null;
 
-    static ParserHelper get() {
+    public static ParserHelper get() {
+        if (instance == null)
+            instance = new ParserHelper();
         return instance;
     }
 
-    static void init(Hashtable<String, Token> ts) {
-        instance = new ParserHelper(ts);
+    public void curlyOpened() {
+        currentScope++;
+        depth++;
+    }
+
+    public void multiStatementBlockClosed() {
+        currentScope--;
+        depth--;
+    }
+
+    public void program() throws SemanticErrorException  {
+        if (failed)
+            throw new SemanticErrorException();
+        throw new UnsupportedOperationException("Not yet assembled ='(");
+    }
+
+    public void declaration(String type) {
+        for (String id: idBuf) {
+            //Mangling
+            SymbolsTable.get().put(mangled(id), new SymbolData());
+            //Type
+            SymbolsTable.get().get(mangled(id)).setType(type);
+        }
+        idBuf.clear();
+    }
+
+    private String mangled(String id) {
+        if (currentScope != 0)
+            return global(id + "_" + Integer.toString(currentScope));
+        else
+            return global(id);
+    }
+
+    private String global(String id) {
+        return id + "_1";
+    }
+
+    public void identifier(String id) {
+        idBuf.add(id);
+    }
+
+    public void assignment(String destinationId) {
+
+    }
+
+    void operand(String operand) {
+        if ((depth != 0) && (SymbolsTable.get().containsKey(mangled(operand)))) {
+            ReversePolishNotation.get().addSym(SymbolsTable.get().get(mangled(operand)).getId());
+        } else if (SymbolsTable.get().containsKey(global(operand))) {
+            ReversePolishNotation.get().addSym(SymbolsTable.get().get(global(operand)).getId());
+        } else if (SymbolsTable.get().containsKey(operand)) {
+            ReversePolishNotation.get().addSym(SymbolsTable.get().get(operand).getId());
+        } else {
+            Logger.get().logOutput("Undeclared variable: \"" + operand + "\"");
+            failed = true;
+        }
+        
+    }
+
+    void operator(String op) {
+        ReversePolishNotation.get().addOp(op);
+    }
+
+    void unaryMinus(String operand) {
+        if (!SymbolsTable.get().containsKey("-" + operand)) {
+            if (SymbolsTable.get().containsKey(operand)) {
+                SymbolsTable.get().put("-" + operand, new SymbolData(SymbolsTable.get().get(operand)));
+            } else {
+                throw new UnsupportedOperationException("!!!WRONG CONSTANT?!!!");
+            }
+        }
+        ReversePolishNotation.get().addSym(SymbolsTable.get().get("-"+operand).getId());
+    }
+
+    void assignTo(String operand) {
+        if ((depth != 0) && (SymbolsTable.get().containsKey(mangled(operand)))) {
+            ReversePolishNotation.get().addSym(SymbolsTable.get().get(mangled(operand)).getId());
+        } else if (SymbolsTable.get().containsKey(global(operand))) {
+            ReversePolishNotation.get().addSym(SymbolsTable.get().get(global(operand)).getId());
+        } else {
+            Logger.get().logOutput("Unknown symbol for LHS: \"" + operand + "\"");
+            failed = true;
+        }
+        operator("ASS");
     }
 
 }

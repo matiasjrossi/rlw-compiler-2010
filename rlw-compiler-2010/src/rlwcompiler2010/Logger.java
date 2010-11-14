@@ -5,6 +5,9 @@
 
 package rlwcompiler2010;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  * @author matias
@@ -12,9 +15,10 @@ package rlwcompiler2010;
 public class Logger {
     private boolean enableDebug = false;
     private boolean enableOutput = true;
+    private Set<String> muted = new HashSet<String>();
 
     public void logDebug(String loggee, String log) {
-        if (enableDebug)
+        if ((enableDebug) && !muted.contains(loggee))
             System.out.println("[DEBUG] " + loggee + ": " + log);
     }
 
@@ -40,6 +44,14 @@ public class Logger {
 
     public void unmute() {
         enableOutput = true;
+    }
+
+    public void mute(String loggee){
+        muted.add(loggee);
+    }
+
+    public void unmute(String loggee) {
+        muted.remove(loggee);
     }
 
     public void dontBeShy() {

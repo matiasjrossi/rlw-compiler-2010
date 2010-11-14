@@ -7,10 +7,8 @@ package rlwcompiler2010;
 
 /**
  *
- * @author g
+ * @author matias
  */
-public class Icelement {
-    public Icelement(){};
-    public Icelement(Object s){};
-    public void set(Object s){};
+class SemanticErrorException extends Exception{
+
 }

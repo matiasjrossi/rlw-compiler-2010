@@ -11,22 +11,32 @@ package rlwcompiler2010;
 public class Token {
 
     private int token;
-    private String symbol;
+    private String lexeme;
+    private String type;
 
     public boolean matches(String s) {
-        return symbol.equals(s);
+        return lexeme.equals(s);
     }
 
     public int get() {
         return token;
     }
     
-    public String getString() {
-        return symbol;
+    public String getLexeme() {
+        return lexeme;
     }
 
     public Token(String s,int t) {
-        symbol = s.trim();
+        lexeme = s.trim();
         token = t;
     }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
 }
