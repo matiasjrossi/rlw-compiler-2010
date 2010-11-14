@@ -31,6 +31,10 @@ public class ReversePolishNotation {
     private Vector<Integer> strip = new Vector<Integer>();
     private Vector<String> operations = new Vector<String>();
 
+    public Vector<Integer> getStrip(){
+        return strip;
+    }
+
     private void fillOperations() {
         //Arithmetic binary operators: Take two from stack, put the result in the stack
         operations.add("ADD");
@@ -44,7 +48,6 @@ public class ReversePolishNotation {
         operations.add("GT");
         operations.add("LE");
         operations.add("GE");
-
 
         operations.add("ASS"); //Two "unary steps" operator: Takes the destination address from stack, then takes the value from stack.
         operations.add("PRN"); //Unary operator: Takes top of the stack
