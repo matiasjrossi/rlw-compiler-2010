@@ -46,7 +46,13 @@ public class ParserHelper {
     public void program() throws SemanticErrorException  {
         if (failed)
             throw new SemanticErrorException();
-        throw new UnsupportedOperationException("Not yet assembled ='(");
+     //   throw new UnsupportedOperationException("Not yet assembled ='(");
+        try{
+        System.out.println(Rlwic2asm.get().getASM());
+        }catch(Exception e){
+            System.out.println("Excepcion catcheada "+e);
+            e.printStackTrace();;
+        }
     }
 
     public void declaration(String type) {

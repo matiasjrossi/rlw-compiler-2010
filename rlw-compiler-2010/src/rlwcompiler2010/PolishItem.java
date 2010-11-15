@@ -20,6 +20,11 @@ public class PolishItem {
     public PolishItem(int cod) {
         this.cod = cod;
     }
+    @Override
+    public String toString(){
+        return label;
+    }
+
 
 
 }
