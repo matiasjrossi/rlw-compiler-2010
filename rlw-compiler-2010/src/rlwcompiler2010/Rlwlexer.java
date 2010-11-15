@@ -231,18 +231,20 @@ public class Rlwlexer implements Scanner {
         Token t = state.getToken(strip);
         if (t != null) { //Si es un token válido
             String s = null;
-            int i = -1; //numero de columna
+            //int i = -1; //numero de columna
 
             if (t.get() == Symbols.IDENTIFIER) {
                 s = t.getLexeme();
-                i= index - s.length();
+                //i= index - s.length();
             } else if (t.get() == Symbols.CONSTANT) {
                 s = t.getLexeme();
-                i=index - t.getLexeme().length();
-                SymbolData sd = new SymbolData();
-                sd.setType(t.getType());
-                sd.setConstant();
-                SymbolsTable.get().put(s, sd);
+                if (!SymbolsTable.get().containsKey(s)) {
+                    //i=index - t.getLexeme().length();
+                    SymbolData sd = new SymbolData();
+                    sd.setType(t.getType());
+                    sd.setConstant();
+                    SymbolsTable.get().put(s, sd);
+                }
             }// calcular el numero de columna
 
             /*

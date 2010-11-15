@@ -13,6 +13,7 @@ class SymbolData {
 
     SymbolData(SymbolData other) {
         this.type = other.type;
+        this.constant = other.constant;
     }
 
     public enum DataType { INT, FLOAT, STRING }
