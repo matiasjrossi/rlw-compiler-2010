@@ -48,7 +48,8 @@ public class ParserHelper {
             throw new SemanticErrorException();
      //   throw new UnsupportedOperationException("Not yet assembled ='(");
         try{
-        System.out.println(Rlwic2asm.get().getASM());
+            System.out.println("Aca les va!\n"
+                    +Rlwic2asm.get().getASM());
         }catch(Exception e){
             System.out.println("Excepcion catcheada "+e);
             e.printStackTrace();;
