@@ -48,8 +48,8 @@ public class Rlwic2asm {
             if (sdata.isConstant()) {
                 data += "    CONSTANT" + sdata.getId()+
                         (sdata.getType()==DataType.STRING?
-                        " db '"+key.trim().substring(1,key.length()-1)+"$'"
-                            :"dd "+key )+ "\n";
+                        " db "+key.substring(0,key.length()-1)+"$\""
+                            :" dd "+key )+ "\n";
             } else {
                 data += "    "+key + " dd ?\n";
             }
@@ -295,7 +295,7 @@ public class Rlwic2asm {
                                 + "    fstsw m16\n"
                                 + "    fwait\n"
                                 + "    mov ax,m16\n"
-                                + "    sahf";
+                                + "    sahf \n";
                     }
                 } else if (op.equals("LBL")) {
                     PolishItem pi = lbls.remove(0);
