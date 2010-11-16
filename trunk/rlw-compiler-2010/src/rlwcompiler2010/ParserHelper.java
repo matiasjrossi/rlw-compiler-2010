@@ -60,11 +60,11 @@ public class ParserHelper {
     public void program() throws SemanticErrorException  {
         if (failed)
             throw new SemanticErrorException();
-     //   throw new UnsupportedOperationException("Not yet assembled ='(");
         try{
-            Rlwic2asm.get().getASM();
+            Rlwic2asm.get().makeASM();
         }catch(Exception e){
-            System.out.println("Excepcion catcheada "+e);
+            System.out.println("Excepcion cacheteada " + e);
+            e.printStackTrace();
         }
     }
 
@@ -79,7 +79,7 @@ public class ParserHelper {
     }
 
     private String mangled(String id) {
-        if (currentScope != 0)
+        if (depth != 0)
             return global(id + "_" + Integer.toString(currentScope));
         else
             return global(id);

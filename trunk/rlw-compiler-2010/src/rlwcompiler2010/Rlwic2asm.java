@@ -23,13 +23,14 @@ public class Rlwic2asm {
         return theOne;
     }
     private String asm=null;
-    public String getASM() throws SemanticErrorException {
+
+    public String getASM(){
         if(asm==null)
-            asm=makeASM();
+            return "";
         return asm;
     }
 
-    private String makeASM() throws SemanticErrorException{
+    public void makeASM() throws SemanticErrorException{
         String stack =
                 "\n\n\n"+
                 ".model small\n"+
@@ -342,7 +343,7 @@ public class Rlwic2asm {
                 + "    int 21h\n"
                 + "end main\n";
 
-        return stack + data + code;
+        asm = stack + data + code;
     }
 
 }
