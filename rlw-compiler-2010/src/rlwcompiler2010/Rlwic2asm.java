@@ -100,7 +100,7 @@ public class Rlwic2asm {
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
                                 + "    mov fperon,eax\n"
-                                + (tb == DataType.FLOAT
+                                + (ta == DataType.FLOAT
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
                                 + "    fadd\n"
@@ -108,7 +108,7 @@ public class Rlwic2asm {
                                 + "    fwait\n"
                                 + "    mov ax,m16\n"
                                 + "    sahf \n"
-                                + "    jo _sumOver\n"
+                                + "    jc _sumOver\n"
                                 + "    fst fperon\n"
                                 + "    mov eax,fperon\n"
                                 + "    push eax\n";
@@ -142,7 +142,7 @@ public class Rlwic2asm {
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
                                 + "    mov fperon,eax\n"
-                                + (tb == DataType.FLOAT
+                                + (ta == DataType.FLOAT
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
                                 + "    fmul\n"
@@ -179,7 +179,7 @@ public class Rlwic2asm {
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
                                 + "    mov fperon,eax\n"
-                                + (tb == DataType.FLOAT
+                                + (ta == DataType.FLOAT
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
                                 + "    fdiv\n"
@@ -211,7 +211,7 @@ public class Rlwic2asm {
                     asm += "    pop eax\n";
                     if (tb == DataType.FLOAT || ta == DataType.FLOAT) {
                         asm += "    mov fperon,eax; resta float \n"
-                                + (tb == DataType.FLOAT
+                                + (ta == DataType.FLOAT
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
                                 + "    mov fperon,ebx\n"
@@ -294,7 +294,7 @@ public class Rlwic2asm {
                         asm += "    cmp eax,ebx; comp int\n";
                     }else{
                         asm +="    mov fperon,eax; comp float \n"
-                                + (tb == DataType.FLOAT
+                                + (ta == DataType.FLOAT
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
                                 + "    mov fperon,ebx\n"
