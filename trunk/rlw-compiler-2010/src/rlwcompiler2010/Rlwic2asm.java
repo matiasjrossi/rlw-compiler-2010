@@ -296,24 +296,25 @@ public class Rlwic2asm {
                                 + "    sahf";
                     }
                 } else if (op.equals("LBL")) {
+                    PolishItem pi = operands.remove(operands.size()-1);
                     asm += "_"+p.label+":\n";
                 } else if (op.equals("JEQ")){
-                    PolishItem pi = operands.remove(0);
+                    PolishItem pi = operands.remove(operands.size()-1);
                     asm += "    je _"+pi.label+"\n";
                 }else if (op.equals("JNE")) {
-                    PolishItem pi = operands.remove(0);
+                    PolishItem pi = operands.remove(operands.size()-1);
                     asm += "    jne _"+pi.label+"\n";
                 } else if (op.equals("JLT")) {
-                    PolishItem pi = operands.remove(0);
+                    PolishItem pi = operands.remove(operands.size()-1);
                     asm += "    jb _"+pi.label+"\n";
                 } else if (op.equals("JGT")) {
-                    PolishItem pi = operands.remove(0);
+                    PolishItem pi = operands.remove(operands.size()-1);
                     asm += "    jg _"+pi.label+"\n";
                 } else if (op.equals("JLE")) {
-                    PolishItem pi = operands.remove(0);
+                    PolishItem pi = operands.remove(operands.size()-1);
                     asm += "    jbe _"+pi.label+"\n";
                 } else if (op.equals("JGE")) {
-                    PolishItem pi = operands.remove(0);
+                    PolishItem pi = operands.remove(operands.size()-1);
                     asm += "    jge _"+pi.label+"\n";
                 }
             }
