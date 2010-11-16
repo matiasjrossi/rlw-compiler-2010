@@ -61,11 +61,14 @@ public class Rlwic2asm {
                 + "    mov ds, ax\n";
         ReversePolishNotation rpn = ReversePolishNotation.get();
         Vector<PolishItem> operands = new Vector<PolishItem>();
+        Vector<PolishItem> lbls = new Vector<PolishItem>();
         Vector<SymbolData.DataType> pushedTypes = new Vector<SymbolData.DataType>();
 
         for (PolishItem p : rpn.getStrip()) {
             String asm = "";
-            if (p.flag||p.cod >= rpn.offset) {
+            if(p.flag){
+                lbls.add(0,p);
+            }else if (p.cod >= rpn.offset) {
                 //new operand
                 operands.add(p);
             } else {
@@ -221,6 +224,7 @@ public class Rlwic2asm {
                         pushedTypes.add(DataType.INT);
                     }
                 } else if (op.equals("ASS")) {
+
                     String d1 = null, d2 = null;
                     d1 = st.getById(operands.remove(0).cod - rpn.offset);
                     if (!operands.isEmpty()) {
@@ -294,25 +298,25 @@ public class Rlwic2asm {
                                 + "    sahf";
                     }
                 } else if (op.equals("LBL")) {
-                    PolishItem pi = operands.remove(operands.size()-1);
+                    PolishItem pi = lbls.remove(0);
                     asm += "_"+pi.label+":\n";
                 } else if (op.equals("JEQ")){
-                    PolishItem pi = operands.remove(operands.size()-1);
+                    PolishItem pi = lbls.remove(0);
                     asm += "    je _"+pi.label+"\n";
                 }else if (op.equals("JNE")) {
-                    PolishItem pi = operands.remove(operands.size()-1);
+                    PolishItem pi = lbls.remove(0);
                     asm += "    jne _"+pi.label+"\n";
                 } else if (op.equals("JLT")) {
-                    PolishItem pi = operands.remove(operands.size()-1);
+                    PolishItem pi = lbls.remove(0);
                     asm += "    jb _"+pi.label+"\n";
                 } else if (op.equals("JGT")) {
-                    PolishItem pi = operands.remove(operands.size()-1);
+                    PolishItem pi = lbls.remove(0);
                     asm += "    jg _"+pi.label+"\n";
                 } else if (op.equals("JLE")) {
-                    PolishItem pi = operands.remove(operands.size()-1);
+                    PolishItem pi = lbls.remove(0);
                     asm += "    jbe _"+pi.label+"\n";
                 } else if (op.equals("JGE")) {
-                    PolishItem pi = operands.remove(operands.size()-1);
+                    PolishItem pi = lbls.remove(0);
                     asm += "    jge _"+pi.label+"\n";
                 }
             }
