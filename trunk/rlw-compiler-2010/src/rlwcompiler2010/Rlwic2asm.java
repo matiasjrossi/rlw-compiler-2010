@@ -49,10 +49,10 @@ public class Rlwic2asm {
         for (String key : st.keySet()) {
             SymbolData sdata = st.get(key);
             if (sdata.isConstant()) {
-                data += "    CONSTANT" + sdata.getId() + " db " +
+                data += "    CONSTANT" + sdata.getId()+
                         (sdata.getType()==DataType.STRING?
-                        "'"+key.substring(1,key.length()-2)+"$'"
-                            :key )+ "\n";
+                        " db '"+key.trim().substring(1,key.length()-1)+"$'"
+                            :"dd "+key )+ "\n";
             } else {
                 data += "    "+key + " ds 4\n";
             }
@@ -147,8 +147,7 @@ public class Rlwic2asm {
                         pushedTypes.add(DataType.FLOAT);
                     } else {
                         asm += "    imul eax,ebx;mult entera\n"
-                                + // que pasa con el edx? con el over, con el carry?
-                                "    push eax\n";
+                               +"    push eax\n";
                         pushedTypes.add(DataType.INT);
                     }
                 } else if (op.equals("DIV")) {
@@ -266,9 +265,9 @@ public class Rlwic2asm {
 
                 } else if (op.equals("PRN")){
                     SymbolData rval = st.get(st.getById(operands.remove(0).cod - rpn.offset));
-                    asm += "mov dx,OFFSET CONSTANT"+rval.getId()+"\n"+
-                            "mov ah,9\n"+
-                            "int 21h\n";
+                    asm += "    mov dx,OFFSET CONSTANT"+rval.getId()+"\n"+
+                            "    mov ah,9\n"+
+                            "    int 21h\n";
                 } else if (op.equals("CMP")){
                     while (!operands.isEmpty()) {
                         String k = SymbolsTable.get().getById(
@@ -284,9 +283,9 @@ public class Rlwic2asm {
                     DataType ta = pushedTypes.remove(0);
                     asm += "    pop eax\n";
                     if(ta == DataType.INT && tb == DataType.INT){
-                        asm += "    cmp eax,ebx\n";
+                        asm += "    cmp eax,ebx; comp int\n";
                     }else{
-                        asm +="    mov fperon,ebx; resta float \n"
+                        asm +="    mov fperon,ebx; comp float \n"
                                 + (tb == DataType.FLOAT
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
@@ -295,7 +294,10 @@ public class Rlwic2asm {
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
                                 + "    fcompp\n"
-                                + "    ¿y ahora?";
+                                + "    fstsw fperon\n"
+                                + "    fwait\n"
+                                + "    mov ax,fperon\n"
+                                + "    sahf";
                     }
                 } else if (op.equals("LBL")) {
                     asm += "_"+p.label+":\n";
@@ -322,9 +324,9 @@ public class Rlwic2asm {
             code += asm;
          //   System.out.print(asm);
         }
-        code += "mov ah,4ch\n"
-                + "mov al,0\n"
-                + "int 21h\n"
+        code += "    mov ah,4ch\n"
+                + "    mov al,0\n"
+                + "    int 21h\n"
                 + "end main\n"
                 + "zeroDiv:\n"
                 + "mov dx,OFFSET zeroDivError\n"
