@@ -291,7 +291,7 @@ public class Rlwic2asm {
                     DataType ta = pushedTypes.remove(0);
                     asm += "    pop eax\n";
                     if(ta == DataType.INT && tb == DataType.INT){
-                        asm += "    cmp eax,eax; comp int\n";
+                        asm += "    cmp eax,ebx; comp int\n";
                     }else{
                         asm +="    mov fperon,ebx; comp float \n"
                                 + (tb == DataType.FLOAT
