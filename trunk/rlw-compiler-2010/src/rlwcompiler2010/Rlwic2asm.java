@@ -37,10 +37,11 @@ public class Rlwic2asm {
                 ".586\n"+
                 ".stack 100h\n";
         String data = ".data\n"
+                + "    CRLF db \"  $\"\n"
                 + "    fperon dd ?\n"
                 + "    m16 dw ?\n"
-                + "    sumOverError db 'Error! Overflow en una suma$'\n"
-                + "    zeroDivError db 'Error! Intento de division por 0$'\n";
+                + "    sumOverError db \"Error! Overflow en una suma$\"\n"
+                + "    zeroDivError db \"Error! Intento de division por 0$\"\n";
         SymbolsTable st = SymbolsTable.get();
 
         for (String key : st.keySet()) {
@@ -58,7 +59,9 @@ public class Rlwic2asm {
         String code = ".code\n"
                 + "main:\n"
                 + "    mov ax, @data\n"
-                + "    mov ds, ax\n";
+                + "    mov ds, ax\n"
+                + "    mov CRLF, 13\n"
+                + "    mov CRLF + 1, 10\n";
         ReversePolishNotation rpn = ReversePolishNotation.get();
         Vector<PolishItem> operands = new Vector<PolishItem>();
         Vector<PolishItem> lbls = new Vector<PolishItem>();
@@ -101,9 +104,13 @@ public class Rlwic2asm {
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
                                 + "    fadd\n"
+                                + "    fstsw m16\n"
+                                + "    fwait\n"
+                                + "    mov ax,m16\n"
+                                + "    sahf \n"
+                                + "    jo _sumOver\n"
                                 + "    fst fperon\n"
                                 + "    mov eax,fperon\n"
-                                + "    jo _sumOver\n"
                                 + "    push eax\n";
                         pushedTypes.add(DataType.FLOAT);
                     } else {
@@ -144,7 +151,7 @@ public class Rlwic2asm {
                                 + "    push eax\n";
                         pushedTypes.add(DataType.FLOAT);
                     } else {
-                        asm += "     imul ebx; mult entera\n"
+                        asm +=  "    imul ebx; mult entera\n"
                                +"    push eax\n";
                         pushedTypes.add(DataType.INT);
                     }
@@ -203,11 +210,11 @@ public class Rlwic2asm {
                     DataType ta = pushedTypes.remove(0);
                     asm += "    pop eax\n";
                     if (tb == DataType.FLOAT || ta == DataType.FLOAT) {
-                        asm += "    mov fperon,ebx; resta float \n"
+                        asm += "    mov fperon,eax; resta float \n"
                                 + (tb == DataType.FLOAT
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
-                                + "    mov fperon,eax\n"
+                                + "    mov fperon,ebx\n"
                                 + (tb == DataType.FLOAT
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
@@ -265,6 +272,9 @@ public class Rlwic2asm {
                     SymbolData rval = st.get(st.getById(operands.remove(0).cod - rpn.offset));
                     asm += "    mov dx,OFFSET CONSTANT"+rval.getId()+"\n"+
                             "    mov ah,9\n"+
+                            "    int 21h\n"+
+                            "    mov dx,OFFSET CRLF\n"+
+                            "    mov ah,9\n"+
                             "    int 21h\n";
                 } else if (op.equals("CMP")){
                     while (!operands.isEmpty()) {
@@ -283,11 +293,11 @@ public class Rlwic2asm {
                     if(ta == DataType.INT && tb == DataType.INT){
                         asm += "    cmp eax,ebx; comp int\n";
                     }else{
-                        asm +="    mov fperon,ebx; comp float \n"
+                        asm +="    mov fperon,eax; comp float \n"
                                 + (tb == DataType.FLOAT
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
-                                + "    mov fperon,eax\n"
+                                + "    mov fperon,ebx\n"
                                 + (tb == DataType.FLOAT
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
@@ -318,6 +328,9 @@ public class Rlwic2asm {
                 } else if (op.equals("JGE")) {
                     PolishItem pi = lbls.remove(0);
                     asm += "    jge _"+pi.label+"\n";
+                } else if (op.equals("JMP")) {
+                    PolishItem pi = lbls.remove(0);
+                    asm += "    jmp _"+pi.label+"\n";
                 }
             }
             code += asm;
@@ -330,7 +343,10 @@ public class Rlwic2asm {
                 + "_zeroDiv:\n"
                 + "    mov dx,OFFSET zeroDivError\n"
                 + "    mov ah,9\n"
-                + "    int 21h\n"
+                + "    int 21h\n"               +
+                                            "    mov dx,OFFSET CRLF\n"+
+                            "    mov ah,9\n"+
+                            "    int 21h\n"
                 + "    mov ah,4ch\n"
                 + "    mov al,0\n"
                 + "    int 21h\n"
@@ -338,7 +354,10 @@ public class Rlwic2asm {
                 + "_sumOver:\n"
                 + "    mov dx,OFFSET sumOverError\n"
                 + "    mov ah,9\n"
-                + "    int 21h\n"
+                + "    int 21h\n"       /* sadsasdasd*/      +/*+*/
+                                                    "    mov dx,OFFSET CRLF\n"+
+                            "    mov ah,9\n"+
+                            "    int 21h\n"
                 + "    mov ah,4ch\n"
                 + "    mov al,0\n"
                 + "    int 21h\n"
