@@ -51,10 +51,7 @@ public class Compiler {
             }
             System.out.println("\n\n\n\n" + SymbolsTable.get().toString());
             System.out.println(ReversePolishNotation.get().toString());
-            try {
-                System.out.println(Rlwic2asm.get().getASM());
-            } catch (SemanticErrorException e) {
-            }
+            System.out.println(Rlwic2asm.get().getASM());
         }
        
     }
