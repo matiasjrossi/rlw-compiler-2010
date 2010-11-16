@@ -294,11 +294,11 @@ public class Rlwic2asm {
                         asm += "    cmp eax,eax; comp int\n";
                     }else{
                         asm +="    mov fperon,ebx; comp float \n"
-                                + (ta == DataType.FLOAT
+                                + (tb == DataType.FLOAT
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
-                                + "    mov fperon,ebx\n"
-                                + (tb == DataType.FLOAT
+                                + "    mov fperon,eax\n"
+                                + (ta == DataType.FLOAT
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
                                 + "    fcompp\n"
