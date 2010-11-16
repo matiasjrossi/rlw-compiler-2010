@@ -29,7 +29,7 @@ public class Rlwic2asm {
         return asm;
     }
 
-    private String makeASM(){
+    private String makeASM() throws SemanticErrorException{
         String stack =
                 "\n\n\n"+
                 ".model small\n"+
@@ -37,10 +37,11 @@ public class Rlwic2asm {
                 ".stack 100h\n";
         String data = ".data\n"
                 + "    fperon dd ?\n"
-                + "    evita16 dw ?\n"
+                + "    m16 dw ?\n"
                 + "    sumOverError db 'Error! Overflow en una suma$'\n"
                 + "    zeroDivError db 'Error! Intento de division por 0$'\n";
         SymbolsTable st = SymbolsTable.get();
+
         for (String key : st.keySet()) {
             SymbolData sdata = st.get(key);
             if (sdata.isConstant()) {
@@ -104,7 +105,7 @@ public class Rlwic2asm {
                                 + "    push eax\n";
                         pushedTypes.add(DataType.FLOAT);
                     } else {
-                        asm += "    iadd eax,ebx ; suma entera\n"
+                        asm += "    add eax,ebx ; suma entera\n"
                                 + "    jo _sumOver\n"
                                 + "    push eax\n";
                         pushedTypes.add(DataType.INT);
@@ -141,7 +142,7 @@ public class Rlwic2asm {
                                 + "    push eax\n";
                         pushedTypes.add(DataType.FLOAT);
                     } else {
-                        asm += "     imul ebx;mult entera\n"
+                        asm += "     imul ebx; mult entera\n"
                                +"    push eax\n";
                         pushedTypes.add(DataType.INT);
                     }
@@ -246,8 +247,8 @@ public class Rlwic2asm {
                         DataType lt = pushedTypes.remove(0);
                         SymbolData lval = st.get(d1);
                         if(lval.getType()== DataType.INT && lt == DataType.FLOAT ){
-                           System.out.println("conversion invalida int<-float");
-                          //throw new SemanticErrorException("Invalid convertion from float to int");
+                           //System.out.println("conversion invalida int<-float");
+                          throw new SemanticErrorException("Invalid convertion from float to int");
                         }
                         if(lval.getType()== DataType.FLOAT && lt == DataType.INT ){
                             asm += "    mov fperon,eax; conversion implicit\n"+
@@ -289,9 +290,9 @@ public class Rlwic2asm {
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
                                 + "    fcompp\n"
-                                + "    fstsw evita16\n"
+                                + "    fstsw m16\n"
                                 + "    fwait\n"
-                                + "    mov ax,evita16\n"
+                                + "    mov ax,m16\n"
                                 + "    sahf";
                     }
                 } else if (op.equals("LBL")) {
@@ -323,7 +324,7 @@ public class Rlwic2asm {
                 + "    mov al,0\n"
                 + "    int 21h\n"
 
-                + "zeroDiv:\n"
+                + "_zeroDiv:\n"
                 + "    mov dx,OFFSET zeroDivError\n"
                 + "    mov ah,9\n"
                 + "    int 21h\n"
@@ -331,7 +332,7 @@ public class Rlwic2asm {
                 + "    mov al,0\n"
                 + "    int 21h\n"
 
-                + "sumOver:\n"
+                + "_sumOver:\n"
                 + "    mov dx,OFFSET sumOverError\n"
                 + "    mov ah,9\n"
                 + "    int 21h\n"
