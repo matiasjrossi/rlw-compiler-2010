@@ -5,6 +5,7 @@
 
 package rlwcompiler2010;
 
+import java.util.Stack;
 import java.util.Vector;
 
 /**
@@ -16,6 +17,20 @@ public class ParserHelper {
     private int currentScope = 0;
 
     private int depth = 0;
+
+    private Stack<String> forCounterStack = new Stack<String>();
+
+    private Stack<String> forIncrementStack = new Stack<String>();
+
+    private Stack<Integer> forStack = new Stack<Integer>();
+
+    private int forN = 0;
+
+    private int ifN = 0;
+
+    private Stack<Integer> ifStack = new Stack<Integer>();
+
+    private Stack<String> cmpStack = new Stack<String>();
 
     private Vector<String> idBuf;
 
@@ -33,13 +48,12 @@ public class ParserHelper {
         return instance;
     }
 
-    public void curlyOpened() {
+    public void scopeStart() {
         currentScope++;
         depth++;
     }
 
-    public void multiStatementBlockClosed() {
-        currentScope--;
+    public void scopeEnd() {
         depth--;
     }
 
@@ -52,7 +66,6 @@ public class ParserHelper {
                     +Rlwic2asm.get().getASM());
         }catch(Exception e){
             System.out.println("Excepcion catcheada "+e);
-            e.printStackTrace();;
         }
     }
 
@@ -133,24 +146,116 @@ public class ParserHelper {
     }
 
     public void comparator(String op) {
+        cmpStack.push(op);
+        operator("CMP");
+    }
+
+    public void then() {
+        String cmp = cmpStack.pop();
+
+        ReversePolishNotation.get().addLabel("elseLabel_" + ifStack.peek().toString());
+
+        if (cmp.equals("<")) operator("JGE");
+        else if(cmp.equals("<=")) operator("JGT");
+        else if(cmp.equals(">")) operator("JLE");
+        else if(cmp.equals(">=")) operator("JLT");
+        else if(cmp.equals("=")) operator("JNE");
+        else if(cmp.equals("<>")) operator("JEQ");
+    }
+
+    public void elseLabel() {
+        ReversePolishNotation.get().addLabel("endifLabel_" + ifStack.peek().toString());
         try {
-            if (op.equals("=")) ReversePolishNotation.get().addOp("EQ");
-            else if (op.equals("<>")) ReversePolishNotation.get().addOp("DIS");
-            else if (op.equals("<")) ReversePolishNotation.get().addOp("LT");
-            else if (op.equals("<=")) ReversePolishNotation.get().addOp("LE");
-            else if (op.equals(">")) ReversePolishNotation.get().addOp("GT");
-            else if (op.equals(">=")) ReversePolishNotation.get().addOp("GE");
+            ReversePolishNotation.get().addOp("JMP");
         } catch (Exception e) {
             failed = true;
         }
+        ReversePolishNotation.get().labelCode("elseLabel_" + ifStack.peek().toString());
+    }
+
+    public void endifLabel() {
+        ReversePolishNotation.get().labelCode("endifLabel_" + ifStack.peek().toString());
+    }
+
+    public void loopStart(String id, String idexp) {
+        forCounterStack.push(id);
+        identifier(id);
+        declaration("int");
+        operand(idexp);
+        assignTo(id);
+    }
+
+    public void loopStart(String id) {
+        forCounterStack.push(id);
+        identifier(id);
+        declaration("int");
+        assignTo(id);
+    }
+
+    public void loopCheck(String id, String cmp, String idexp) {
+        ReversePolishNotation.get().labelCode("loopCheck_" + forStack.peek().toString());
+        operand(id);
+        operand(idexp);
+        operator("CMP");
+        ReversePolishNotation.get().addLabel("loopEnd_" + forStack.peek().toString());
+
+        if (cmp.equals("<")) operator("JGE");
+        else if(cmp.equals("<=")) operator("JGT");
+        else if(cmp.equals(">")) operator("JLE");
+        else if(cmp.equals(">=")) operator("JLT");
+        else if(cmp.equals("=")) operator("JNE");
+        else if(cmp.equals("<>")) operator("JEQ");
+
+    }
+
+    public void loopCheck(String id, String cmp) {
+        ReversePolishNotation.get().labelCode("loopCheck_" + forStack.peek().toString());
+        operand(id);
+        operator("CMP");
+        ReversePolishNotation.get().addLabel("loopEnd_" + forStack.peek().toString());
+
+        if (cmp.equals("<")) operator("JLE");
+        else if(cmp.equals("<=")) operator("JLT");
+        else if(cmp.equals(">")) operator("JGE");
+        else if(cmp.equals(">=")) operator("JGT");
+        else if(cmp.equals("=")) operator("JNE");
+        else if(cmp.equals("<>")) operator("JEQ");
+    }
+
+
+    public void loopAfter(String id) {
+        forIncrementStack.push(id);
+    }
+
+
+    public void loopAfter() {
+        forIncrementStack.push(SymbolsTable.get().getById(ReversePolishNotation.get().getStrip().removeLast().cod-ReversePolishNotation.offset));
     }
 
     public void iF() {
-
+        ifStack.push(++ifN);
     }
 
-    public void label() {
-        
+    public void foR() {
+        forStack.push(++forN);
+    }
+
+    public void endIf() {
+        ifStack.pop();
+    }
+
+    public void endFor() {
+        operand(forCounterStack.peek());
+        operand(forIncrementStack.pop());
+        operator("ADD");
+        operand(forCounterStack.pop());
+        operator("ASS");
+
+        ReversePolishNotation.get().addLabel("loopCheck_" + forStack.peek().toString());
+        operator("JMP");
+
+        ReversePolishNotation.get().labelCode("loopEnd_" + forStack.pop().toString());
+
     }
 
 }

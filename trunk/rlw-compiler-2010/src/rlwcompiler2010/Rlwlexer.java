@@ -160,8 +160,6 @@ public class Rlwlexer implements Scanner {
     public Symbol next_token() throws Exception {
         Token t = nextToken();
         if (t != null) {
-            if (t.get() == Symbols.LCURLY)
-                ParserHelper.get().curlyOpened();
             Logger.get().logDebug("Lexer", "Returning token " + SymbolsHelper.sym2Sting(t.get()));
             return new Symbol(t.get(), t.getLexeme());
         }
@@ -245,7 +243,8 @@ public class Rlwlexer implements Scanner {
                     sd.setConstant();
                     SymbolsTable.get().put(s, sd);
                 }
-            }// calcular el numero de columna
+            } 
+            // calcular el numero de columna
 
             /*
             if (s != null) { //Si es id o constante... que asco...

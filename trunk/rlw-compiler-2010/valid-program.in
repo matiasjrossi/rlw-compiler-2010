@@ -1,12 +1,19 @@
+for (i :- 0; i<10; 1)
+	for (j :- 0; j <> 10; 1)
+		print ("caca");
+
+
+
 //This is a valid program
 
 //Those are global variable declarations
-float foo;
+//int foo;
 //float bar, baz;
-foo :- -165;
-foo :- 10* 50 + 1.5/3 - 100 ;
+
+//foo :- 105 * 65;
 
 //This is an assignment statement
+//foo :- - 156;
 
 
 //This is an assignment using a signed constant
@@ -14,6 +21,7 @@ foo :- 10* 50 + 1.5/3 - 100 ;
 
 //This is a selection
 //if (foo < 0) {
+//   bar :- 156.4E19;
 //   baz :- 0.0;
 //} else {
 //   bar :- 0;
@@ -24,11 +32,11 @@ foo :- 10* 50 + 1.5/3 - 100 ;
 //{
 //   float foo;
 //   foo :- bar; // Here we're using both global and local identifiers
-   print("i'm in");
-//  foo :- 1.5;
+//   print("i'm inside the scope");
+//   foo :- 10;
 //}
 
-print("i'm out");
+//foo :- 1.5;
 
 //This is another scope
 //{
