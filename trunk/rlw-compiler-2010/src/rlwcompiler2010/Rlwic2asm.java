@@ -297,7 +297,7 @@ public class Rlwic2asm {
                     }
                 } else if (op.equals("LBL")) {
                     PolishItem pi = operands.remove(operands.size()-1);
-                    asm += "_"+p.label+":\n";
+                    asm += "_"+pi.label+":\n";
                 } else if (op.equals("JEQ")){
                     PolishItem pi = operands.remove(operands.size()-1);
                     asm += "    je _"+pi.label+"\n";
