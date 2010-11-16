@@ -43,20 +43,22 @@ public class ReversePolishNotation {
         operations.add("DIV");
         operations.add("SUB");
         //Comparators: Take the top from stack and compare it to the new top (after taking it out). Then push '0' if false or any other value if true.
-        operations.add("EQ");
-        operations.add("DIS");
-        operations.add("LT");
-        operations.add("GT");
-        operations.add("LE");
-        operations.add("GE");
+        operations.add("CMP");
+        operations.add("JEQ");
+        operations.add("JNE");
+        operations.add("JLT");
+        operations.add("JGT");
+        operations.add("JLE");
+        operations.add("JGE");
 
         operations.add("ASS"); //Two "unary steps" operator: Takes the destination address from stack, then takes the value from stack.
         operations.add("PRN"); //Unary operator: Takes top of the stack
 
-        operations.add("JMP"); //
-        operations.add("JIF");
+        operations.add("JMP");
 
         operations.add("LBL");
+
+        operations.add("");
 
     }
 
@@ -84,7 +86,10 @@ public class ReversePolishNotation {
         String output = "\n\nPolaca Inversa:\n";
 
         for (PolishItem pi: strip) {
-            output += (pi.cod<offset?operation(pi.cod):SymbolsTable.get().getById(pi.cod-offset)) + "; ";
+           if (pi.flag)
+                output += pi.label + ": ; ";
+            else
+                output += (pi.cod<offset?operation(pi.cod):SymbolsTable.get().getById(pi.cod-offset)) + "; ";
         }
 
         return output;
@@ -93,5 +98,20 @@ public class ReversePolishNotation {
 
     void addSym(Integer id) {
         strip.add(new PolishItem(id + offset));
+    }
+
+    void addLabel(String string) {
+        PolishItem pi = new PolishItem(-1);
+        pi.flag = true;
+        pi.label = string;
+        strip.add(pi);
+    }
+
+    void labelCode(String label) {
+        addLabel(label);
+        try {
+            addOp("LBL");
+        } catch (Exception ex) {
+        }
     }
 }

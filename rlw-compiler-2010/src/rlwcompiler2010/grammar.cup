@@ -6,7 +6,7 @@ import java_cup.runtime.*;
 terminal ASSIGNMENTSYMBOL, BY, COMMA, COMPARATOR, CONSTANT, ELSE, IDENTIFIER, IF, LBRACKET, LCURLY, MINUS, PLUS, RBRACKET, RCURLY, SEMICOLON, TIMES, TYPE, PRINT, FOR;
 
 /* Non terminals */
-non terminal program, assignment, block, declaration, declarations, expresion, factor, identifiers, predicate, print, scope, selection, statement, statements, term, firstlevelstatement, firstlevelstatements, loop, loopstart, loopcheck, loopafter, sconstant;
+non terminal program, assignment, block, declaration, declarations, expresion, factor, identifiers, predicate, print, scope, selection, statement, statements, term, firstlevelstatement, firstlevelstatements, loop, loopstart, loopcheck, loopafter, sconstant, then, elselabel, endiflabel, scopestart, scopeend, preif, prefor;
 
 
 program ::= declarations firstlevelstatements {: Logger.get().logDebug("Parser", "Using rule: program ::= declarations firstlevelstatements"); ParserHelper.get().program(); :}
@@ -24,13 +24,19 @@ firstlevelstatements ::= firstlevelstatements firstlevelstatement {: Logger.get(
         | firstlevelstatement {: Logger.get().logDebug("Parser", "Using rule: firstlevelstatements ::= firstlevelstatement"); :}
 	;
 
-firstlevelstatement ::= LCURLY scope RCURLY {: Logger.get().logDebug("Parser", "Using rule: firstlevelstatement ::= LCURLY scope RCURLY"); :}
+firstlevelstatement ::= LCURLY  scope  RCURLY {: Logger.get().logDebug("Parser", "Using rule: firstlevelstatement ::= LCURLY scope RCURLY"); :}
         | statement{: Logger.get().logDebug("Parser", "Using rule: firstlevelstatement ::= statement"); :}
 	;
 
-scope ::= declarations statements {: Logger.get().logDebug("Parser", "Using rule: scope ::= declarations statements"); :}
-        | /*statements {: Logger.get().logDebug("Parser", "Using rule: scope ::= statements"); :}*/
+scope ::= scopestart declarations statements scopeend {: Logger.get().logDebug("Parser", "Using rule: scope ::= declarations statements"); :}
+        | statements {: Logger.get().logDebug("Parser", "Using rule: scope ::= statements"); :}
 	;
+
+scopestart ::= {: ParserHelper.get().scopeStart(); :}
+        ;
+
+scopeend ::= {: ParserHelper.get().scopeEnd(); :}
+        ;
 
 statements ::= statements statement {: Logger.get().logDebug("Parser", "Using rule: statements ::= statements statement"); :}
         | statement {: Logger.get().logDebug("Parser", "Using rule: statements ::= statement"); :}
@@ -63,11 +69,23 @@ factor ::= IDENTIFIER:i {: Logger.get().logDebug("Parser", "Using rule: factor :
         | sconstant {: Logger.get().logDebug("Parser", "Using rule: factor ::= sconstant"); :}
 	;
 
-selection ::= IF LBRACKET predicate RBRACKET block ELSE block {: Logger.get().logDebug("Parser", "Using rule: selection ::= IF LBRACKET predicate RBRACKET block ELSE block"); ParserHelper.get().iF(); :}
+selection ::= preif IF LBRACKET predicate RBRACKET then block ELSE elselabel block endiflabel{: Logger.get().logDebug("Parser", "Using rule: selection ::= IF LBRACKET predicate RBRACKET block ELSE block"); ParserHelper.get().endIf(); :}
 	;
 
+preif ::= {: ParserHelper.get().iF(); :}
+        ;
+
+then ::= {: ParserHelper.get().then(); :}
+        ;
+
+elselabel ::= {: ParserHelper.get().elseLabel(); :}
+        ;
+
+endiflabel ::= {: ParserHelper.get().endifLabel(); :}
+        ;
+
 block ::= statement {: Logger.get().logDebug("Parser", "Using rule: block ::= statement"); :}
-        | LCURLY statements RCURLY {: Logger.get().logDebug("Parser", "Using rule: block ::= LCURLY statements RCURLY"); ParserHelper.get().multiStatementBlockClosed(); :}
+        | LCURLY statements RCURLY {: Logger.get().logDebug("Parser", "Using rule: block ::= LCURLY statements RCURLY"); :}
 	;
 
 predicate ::= expresion COMPARATOR:c expresion {: Logger.get().logDebug("Parser", "Using rule: predicate ::= expresion COMPARATOR expresion"); ParserHelper.get().comparator(c.toString()); :}
@@ -76,19 +94,22 @@ predicate ::= expresion COMPARATOR:c expresion {: Logger.get().logDebug("Parser"
 print ::= PRINT LBRACKET sconstant RBRACKET SEMICOLON {: Logger.get().logDebug("Parser", "Using rule: print ::= PRINT LBRACKET sconstant RBRACKET SEMICOLON"); ParserHelper.get().operator("PRN"); :}
 	;
 
-loop ::= FOR LBRACKET loopstart SEMICOLON loopcheck SEMICOLON loopafter RBRACKET block {: Logger.get().logDebug("Parser", "Using rule: loop ::= FOR LBRACKET loopstart SEMICOLON loopcheck SEMICOLON loopafter RBRACKET block"); :}
+loop ::= prefor FOR LBRACKET loopstart SEMICOLON loopcheck SEMICOLON loopafter RBRACKET block {: Logger.get().logDebug("Parser", "Using rule: loop ::= FOR LBRACKET loopstart SEMICOLON loopcheck SEMICOLON loopafter RBRACKET block"); ParserHelper.get().endFor(); :}
 	;
 
-loopstart ::= IDENTIFIER ASSIGNMENTSYMBOL IDENTIFIER {: Logger.get().logDebug("Parser", "Using rule: loopstart ::= IDENTIFIER ASSIGNMENTSYMBOL IDENTIFIER"); :}
-	| IDENTIFIER ASSIGNMENTSYMBOL sconstant {: Logger.get().logDebug("Parser", "Using rule: loopstart ::= IDENTIFIER ASSIGNMENTSYMBOL sconstant"); :}
+prefor ::= {: ParserHelper.get().foR(); :}
+        ;
+
+loopstart ::= IDENTIFIER:id ASSIGNMENTSYMBOL IDENTIFIER:idexp {: Logger.get().logDebug("Parser", "Using rule: loopstart ::= IDENTIFIER ASSIGNMENTSYMBOL IDENTIFIER"); ParserHelper.get().loopStart(id.toString(), idexp.toString()); :}
+	| IDENTIFIER:id ASSIGNMENTSYMBOL sconstant {: Logger.get().logDebug("Parser", "Using rule: loopstart ::= IDENTIFIER ASSIGNMENTSYMBOL sconstant"); ParserHelper.get().loopStart(id.toString()); :}
 	;
 
-loopcheck ::= IDENTIFIER COMPARATOR IDENTIFIER {: Logger.get().logDebug("Parser", "Using rule: loopcheck ::= IDENTIFIER COMPARATOR IDENTIFIER"); :}
-	| IDENTIFIER COMPARATOR sconstant {: Logger.get().logDebug("Parser", "Using rule: loopcheck ::= IDENTIFIER COMPARATOR sconstant"); :}
+loopcheck ::= IDENTIFIER:id COMPARATOR:c IDENTIFIER:idexp {: Logger.get().logDebug("Parser", "Using rule: loopcheck ::= IDENTIFIER COMPARATOR IDENTIFIER"); ParserHelper.get().loopCheck(id.toString(), c.toString(), idexp.toString()); :}
+	| IDENTIFIER:id COMPARATOR:c sconstant {: Logger.get().logDebug("Parser", "Using rule: loopcheck ::= IDENTIFIER COMPARATOR sconstant"); ParserHelper.get().loopCheck(id.toString(), c.toString()); :}
 	;
 
-loopafter ::= IDENTIFIER {: Logger.get().logDebug("Parser", "Using rule: loopafter ::= IDENTIFIER"); :}
-	| sconstant {: Logger.get().logDebug("Parser", "Using rule: loopafter ::= sconstant"); :}
+loopafter ::= IDENTIFIER:id {: Logger.get().logDebug("Parser", "Using rule: loopafter ::= IDENTIFIER"); ParserHelper.get().loopAfter(id.toString()); :}
+	| sconstant {: Logger.get().logDebug("Parser", "Using rule: loopafter ::= sconstant"); ParserHelper.get().loopAfter(); :}
 	;
 
 sconstant ::= MINUS CONSTANT:c {: Logger.get().logDebug("Parser", "Using rule: sconstant ::= MINUS CONSTANT"); ParserHelper.get().unaryMinus(c.toString()); :}
