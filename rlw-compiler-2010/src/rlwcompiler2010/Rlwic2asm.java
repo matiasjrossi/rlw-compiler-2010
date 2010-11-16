@@ -65,9 +65,7 @@ public class Rlwic2asm {
 
         for (PolishItem p : rpn.getStrip()) {
             String asm = "";
-            if (p.flag) {
-                operands.add(p);
-            } else if (p.cod >= rpn.offset) {
+            if (p.flag||p.cod >= rpn.offset) {
                 //new operand
                 operands.add(p);
             } else {
@@ -228,14 +226,13 @@ public class Rlwic2asm {
                     if (!operands.isEmpty()) {
                         d2 = d1;
                         SymbolData rval = st.get(d2);
-
                         d1 = st.getById(operands.remove(0).cod - rpn.offset);
                         SymbolData lval = st.get(d1);
                         String id = (rval.isConstant() ? "CONSTANT" + rval.getId() : d2);
                         asm += "    mov eax," + id + "\n";
                         if(lval.getType()== DataType.INT && rval.getType() == DataType.FLOAT ){
-                          System.out.println("conversion invalida int<-float");
-                          //     throw new SemanticErrorException("Invalid convertion from float to int");
+                          //  System.out.println("conversion invalida int<-float");
+                          throw new SemanticErrorException("Invalid convertion from float to int");
                         }
                         if(lval.getType()== DataType.FLOAT && rval.getType() == DataType.INT ){
                             asm += "    mov fperon,eax; conversion implicit\n"+
