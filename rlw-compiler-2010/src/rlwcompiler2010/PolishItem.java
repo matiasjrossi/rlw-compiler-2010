@@ -22,7 +22,7 @@ public class PolishItem {
     }
     @Override
     public String toString(){
-        return label;
+        return "polish"+cod+":"+label;
     }
 
 

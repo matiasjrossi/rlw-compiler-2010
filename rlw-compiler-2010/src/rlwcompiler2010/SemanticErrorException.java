@@ -10,5 +10,9 @@ package rlwcompiler2010;
  * @author matias
  */
 class SemanticErrorException extends Exception{
+    SemanticErrorException(){};
+    SemanticErrorException(String string) {
+        super(string);
+    }
 
 }

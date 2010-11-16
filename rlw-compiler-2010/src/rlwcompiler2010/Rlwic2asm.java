@@ -5,6 +5,7 @@
 package rlwcompiler2010;
 
 import java.util.Vector;
+import rlwcompiler2010.SymbolData.DataType;
 
 /**
  *
@@ -15,15 +16,20 @@ public class Rlwic2asm {
     private Rlwic2asm() {
     }
     private static Rlwic2asm theOne = null;
-
     static public Rlwic2asm get() {
         if (theOne == null) {
             theOne = new Rlwic2asm();
         }
         return theOne;
     }
+    private String asm=null;
+    public String getASM() throws SemanticErrorException {
+        if(asm==null)
+            asm=makeASM();
+        return asm;
+    }
 
-    public String getASM() {
+    private String makeASM(){
         String head = ".386\n"
                 + ".model flat, stdcall\n"
                 + "option casemap :none\n"
@@ -32,16 +38,23 @@ public class Rlwic2asm {
                 + "include \\masm32\\include\\user32.inc\n"
                 + "includelib \\masm32\\lib\\kernel32.lib\n"
                 + "includelib \\masm32\\lib\\user32.lib\n";
-
+        String stack =
+                ".model small\n"+
+                ".stack 100h\n";
         String data = ".data\n"
-                + "fperon ds 4\n";
+                + "    fperon ds 4\n"
+                + "    sumOverError db 'Error! Overflow en una suma$'\n"
+                + "    sumOverError db 'Error! Intento de division por 0$'\n";
         SymbolsTable st = SymbolsTable.get();
         for (String key : st.keySet()) {
             SymbolData sdata = st.get(key);
             if (sdata.isConstant()) {
-                data += "CONSTANT" + sdata.getId() + " db " + key + ", 0\n";
+                data += "    CONSTANT" + sdata.getId() + " db " +
+                        (sdata.getType()==DataType.STRING?
+                        "'"+key.substring(1,key.length()-2)+"$'"
+                            :key )+ "\n";
             } else {
-                data += key + " ds 4\n";
+                data += "    "+key + " ds 4\n";
             }
         }
 
@@ -51,204 +64,286 @@ public class Rlwic2asm {
                 + "    mov ds, ax\n";
         ReversePolishNotation rpn = ReversePolishNotation.get();
         Vector<PolishItem> operands = new Vector<PolishItem>();
+        Vector<SymbolData.DataType> pushedTypes = new Vector<SymbolData.DataType>();
 
-        boolean usingCOOP = false;
         for (PolishItem p : rpn.getStrip()) {
+            String asm = "";
             if (p.flag) {
+                operands.add(p);
             } else if (p.cod >= rpn.offset) {
                 //new operand
-                operands.add(0, p);
+                operands.add(p);
             } else {
                 // new operation
-                String asm = "";
                 String op = rpn.operation(p.cod);
+                //  System.out.println("nueva "+op+" "+operands);
                 if (op.equals("ADD")) {
-                    String d1 = null, d2 = null;
-                    d1 = st.getById(operands.remove(0).cod - rpn.offset);
-                    SymbolData src = st.get(d1),
-                            dest = null;
-                    String id1 = src.isConstant() ? "CONSTANT" + src.getId() : d1, id2 = null;
-                    if (!operands.isEmpty()) {
-                        d2 = st.getById(operands.remove(0).cod - rpn.offset);
-                        dest = st.get(d2);
-                        id2 = (dest.isConstant() ? "CONSTANT" + dest.getId() : d2);
-                    }
-                    if (d2 == null && usingCOOP) {
-                        asm += "  fld " + id1 + "\n"
-                                + "  fadd\n";
-                    } else if (d2 == null
-                            && !usingCOOP
-                            && src.getType() == SymbolData.DataType.FLOAT) {
-                        asm += "  mov fperon,eax\n"
-                                + "  fld fperon\n"
-                                + "  fld " + id1 + "\n"
-                                + "  fadd\n";
-                        usingCOOP = true;
-                    } else if (d2 == null
-                            && !usingCOOP
-                            && src.getType() == SymbolData.DataType.INT) {
-                        asm += "  mov ebx," + id1 + "\n"
-                                + "  add eax,ebx\n";
-                    } else if (d2 != null
-                            && dest.getType() == SymbolData.DataType.INT
-                            && src.getType() == SymbolData.DataType.INT) {
-                        asm += "    mov eax," + id1 + "\n"
-                                + "   mov ebx," + id2 + "\n"
-                                + "    add eax,abx\n";
-                    } else if (d2 != null
-                            && (dest.getType() == SymbolData.DataType.FLOAT
-                            || src.getType() == SymbolData.DataType.FLOAT)) {
-                        asm += "    fld " + id1 + "\n"
-                                + "    fld " + id2 + "\n"
-                                + "    fadd \n";
-                        usingCOOP = true;
-                    }
-                } else if (op.equals("MUL")) {
+                    while (!operands.isEmpty()) {
+                        String k = SymbolsTable.get().getById(
+                                operands.remove(0).cod
+                                - ReversePolishNotation.offset);
+                        SymbolData src = SymbolsTable.get().get(k);
+                        String id = src.isConstant() ? "CONSTANT" + src.getId() : k;
 
-                    String d1 = null, d2 = null;
-                    d1 = st.getById(operands.remove(0).cod - rpn.offset);
-                    SymbolData src = st.get(d1),
-                            dest = null;
-                    String id1 = src.isConstant() ? "CONSTANT" + src.getId() : d1, id2 = null;
-                    if (!operands.isEmpty()) {
-                        d2 = st.getById(operands.remove(0).cod - rpn.offset);
-                        dest = st.get(d2);
-                        id2 = (dest.isConstant() ? "CONSTANT" + dest.getId() : d2);
-                    } else if (d2 == null && usingCOOP) {
-                        asm += "  fld " + id1 + "\n"
-                                + "  fmul\n";
-                    } else if (d2 == null
-                            && !usingCOOP
-                            && src.getType() == SymbolData.DataType.FLOAT) {
-                        asm += "  mov fperon,eax\n"
-                                + "  fld fperon\n"
-                                + "  fld " + id1 + "\n"
-                                + "  fmul\n";
-                        usingCOOP = true;
-                    } else if (d2 == null
-                            && !usingCOOP
-                            && src.getType() == SymbolData.DataType.INT) {
-                        asm += "  mov ebx," + id1 + "\n"
-                                + "  imul eax,ebx\n";
-                    } else if (d2 != null
-                            && dest.getType() == SymbolData.DataType.INT
-                            && src.getType() == SymbolData.DataType.INT) {
-                        asm += "    mov eax," + id1 + "\n"
-                                + "    mov ebx," + id2 + "\n"
-                                + "    imul eax,abx\n";
-                    } else if (d2 != null
-                            && (dest.getType() == SymbolData.DataType.FLOAT
-                            || src.getType() == SymbolData.DataType.FLOAT)) {
-                        asm += "    fld " + id1 + "\n"
-                                + "    fld " + id2 + "\n"
-                                + "    fmul \n";
-                        usingCOOP = true;
+                        asm += "    push " + id + "\n";
+                        pushedTypes.add(src.getType());
+
+                    }
+                    DataType tb = pushedTypes.remove(0);
+                    asm += "    pop ebx\n";
+                    DataType ta = pushedTypes.remove(0);
+                    asm += "    pop eax\n";
+                    if (tb == DataType.FLOAT || ta == DataType.FLOAT) {
+                        asm += "    mov fperon,ebx ; suma float\n"
+                                + (tb == DataType.FLOAT
+                                ? "    fld fperon\n"
+                                : "    fild fperon\n")
+                                + "    mov fperon,eax\n"
+                                + (tb == DataType.FLOAT
+                                ? "    fld fperon\n"
+                                : "    fild fperon\n")
+                                + "    fadd\n"
+                                + "    fst fperon\n"
+                                + "    mov eax,fperon\n"
+                                + "    jo _sumOver\n"
+                                + "    push eax\n";
+                        pushedTypes.add(DataType.FLOAT);
+                    } else {
+                        asm += "    iadd eax,ebx ; suma entera\n"
+                                + "    jo _sumOver\n"
+                                + "    push eax\n";
+                        pushedTypes.add(DataType.INT);
+                    }
+
+                } else if (op.equals("MUL")) {
+                    while (!operands.isEmpty()) {
+                        String k = SymbolsTable.get().getById(
+                                operands.remove(0).cod
+                                - ReversePolishNotation.offset);
+                        SymbolData src = SymbolsTable.get().get(k);
+                        String id = src.isConstant() ? "CONSTANT" + src.getId() : k;
+
+                        asm += "    push " + id + "\n";
+                        pushedTypes.add(src.getType());
+
+                    }
+                    DataType tb = pushedTypes.remove(0);
+                    asm += "    pop ebx\n";
+                    DataType ta = pushedTypes.remove(0);
+                    asm += "    pop eax\n";
+                    if (tb == DataType.FLOAT || ta == DataType.FLOAT) {
+                        asm += "    mov fperon,ebx ; mul float\n"
+                                + (tb == DataType.FLOAT
+                                ? "    fld fperon\n"
+                                : "    fild fperon\n")
+                                + "    mov fperon,eax\n"
+                                + (tb == DataType.FLOAT
+                                ? "    fld fperon\n"
+                                : "    fild fperon\n")
+                                + "    fmul\n"
+                                + "    fst fperon\n"
+                                + "    mov eax,fperon\n"
+                                + "    push eax\n";
+                        pushedTypes.add(DataType.FLOAT);
+                    } else {
+                        asm += "    imul eax,ebx;mult entera\n"
+                                + // que pasa con el edx? con el over, con el carry?
+                                "    push eax\n";
+                        pushedTypes.add(DataType.INT);
                     }
                 } else if (op.equals("DIV")) {
-                    asm += "div ";
                     while (!operands.isEmpty()) {
-                        asm += operands.remove(0);
+                        String k = SymbolsTable.get().getById(
+                                operands.remove(0).cod
+                                - ReversePolishNotation.offset);
+                        SymbolData src = SymbolsTable.get().get(k);
+                        String id = src.isConstant() ? "CONSTANT" + src.getId() : k;
+
+                        asm += "    push " + id + "\n";
+                        pushedTypes.add(src.getType());
+
                     }
-                    asm += "\n";
+                    DataType tb = pushedTypes.remove(0);
+                    asm += "    pop ebx\n"
+                            + "    comp ebx,0\n"
+                            + "    je _zeroDiv\n";
+                    DataType ta = pushedTypes.remove(0);
+                    asm += "    pop eax\n";
+                    if (tb == DataType.FLOAT || ta == DataType.FLOAT) {
+                        asm += "    mov fperon,ebx; div float \n"
+                                + (tb == DataType.FLOAT
+                                ? "    fld fperon\n"
+                                : "    fild fperon\n")
+                                + "    mov fperon,eax\n"
+                                + (tb == DataType.FLOAT
+                                ? "    fld fperon\n"
+                                : "    fild fperon\n")
+                                + "    fdiv\n"
+                                + "    fst fperon\n"
+                                + "    mov eax,fperon\n"
+                                + "    push eax\n";
+                        pushedTypes.add(DataType.FLOAT);
+                    } else {
+                        asm += "    mov edx,0; div entera\n"
+                                + "    idiv ebx\n"
+                                + "    push eax\n";
+                        pushedTypes.add(DataType.INT);
+                    }
                 } else if (op.equals("SUB")) {
-                    asm += "sub ";
                     while (!operands.isEmpty()) {
-                        asm += operands.remove(0);
-                    }
-                    asm += "\n";
+                        String k = SymbolsTable.get().getById(
+                                operands.remove(0).cod
+                                - ReversePolishNotation.offset);
+                        SymbolData src = SymbolsTable.get().get(k);
+                        String id = src.isConstant() ? "CONSTANT" + src.getId() : k;
 
-                } else if (op.equals("EQ")) {
-                    asm += "eq ";
-                    while (!operands.isEmpty()) {
-                        asm += operands.remove(0);
-                    }
-                    asm += "\n";
+                        asm += "    push " + id + "\n";
+                        pushedTypes.add(src.getType());
 
-                } else if (op.equals("DIS")) {
-                    asm += "dis ";
-                    while (!operands.isEmpty()) {
-                        asm += operands.remove(0);
                     }
-                    asm += "\n";
-
-                } else if (op.equals("LT")) {
-                    asm += "lt ";
-                    while (!operands.isEmpty()) {
-                        asm += operands.remove(0);
+                    DataType tb = pushedTypes.remove(0);
+                    asm += "    pop ebx\n";
+                    DataType ta = pushedTypes.remove(0);
+                    asm += "    pop eax\n";
+                    if (tb == DataType.FLOAT || ta == DataType.FLOAT) {
+                        asm += "    mov fperon,ebx; resta float \n"
+                                + (tb == DataType.FLOAT
+                                ? "    fld fperon\n"
+                                : "    fild fperon\n")
+                                + "    mov fperon,eax\n"
+                                + (tb == DataType.FLOAT
+                                ? "    fld fperon\n"
+                                : "    fild fperon\n")
+                                + "    fsub\n"
+                                + "    fst fperon\n"
+                                + "    mov eax,fperon\n"
+                                + "    push eax\n";
+                        pushedTypes.add(DataType.FLOAT);
+                    } else {
+                        asm += "    mov fperon,ebx ; resta entera\n"
+                                + "    mov edx,0\n"
+                                + "    isub eax,ebx\n"
+                                + "    push eax\n";
+                        pushedTypes.add(DataType.INT);
                     }
-                    asm += "\n";
-
-                } else if (op.equals("GT")) {
-                    asm += "gt ";
-                    while (!operands.isEmpty()) {
-                        asm += operands.remove(0);
-                    }
-                    asm += "\n";
-
-                } else if (op.equals("LE")) {
-                    asm += "le ";
-                    while (!operands.isEmpty()) {
-                        asm += operands.remove(0);
-                    }
-                    asm += "\n";
-
-                } else if (op.equals("GE")) {
-                    asm += "ge ";
-                    while (!operands.isEmpty()) {
-                        asm += operands.remove(0);
-                    }
-                    asm += "\n";
-
                 } else if (op.equals("ASS")) {
-
                     String d1 = null, d2 = null;
-                    d1 = st.getById(
-                            operands.remove(
-                            operands.size() - 1).cod - rpn.offset);
+                    d1 = st.getById(operands.remove(0).cod - rpn.offset);
                     if (!operands.isEmpty()) {
-                        d2 = st.getById(operands.remove(0).cod - rpn.offset);
+                        d2 = d1;
                         SymbolData rval = st.get(d2);
+
+                        d1 = st.getById(operands.remove(0).cod - rpn.offset);
+                        SymbolData lval = st.get(d1);
                         String id = (rval.isConstant() ? "CONSTANT" + rval.getId() : d2);
                         asm += "    mov eax," + id + "\n";
-                        //if d1 = FLOAT && d2 = INT
-                        //  tirar y traer del cop
-                        //else if d1 = INT && d2 = FLOAT
-                        //  error
-                        //else
-                        //  no drama
-                    } else {
-                        if (usingCOOP) {
-                            usingCOOP = false;
-                            //traer a eax tope pila coop
+                        if(lval.getType()== DataType.INT && rval.getType() == DataType.FLOAT ){
+                          System.out.println("conversion invalida int<-float");
+                          //     throw new SemanticErrorException("Invalid convertion from float to int");
+                        }
+                        if(lval.getType()== DataType.FLOAT && rval.getType() == DataType.INT ){
+                            asm += "    mov fperon,eax; conversion implicit\n"+
+                                   "    fild fperon\n"+
+                                   "    fst fperon\n"+
+                                   "    mov eax,fperon\n";
+                        }
+                    }else{
+                        asm += "    pop eax\n";
+                        DataType lt = pushedTypes.remove(0);
+                        SymbolData lval = st.get(d1);
+                        if(lval.getType()== DataType.INT && lt == DataType.FLOAT ){
+                           System.out.println("conversion invalida int<-float");
+                          //throw new SemanticErrorException("Invalid convertion from float to int");
+                        }
+                        if(lval.getType()== DataType.FLOAT && lt == DataType.INT ){
+                            asm += "    mov fperon,eax; conversion implicit\n"+
+                                   "    fild fperon\n"+
+                                   "    fst fperon\n"+
+                                   "    mov eax,fperon\n";
                         }
                     }
                     asm += "    mov " + d1 + ",eax\n";
 
-                } else if (op.equals("PRN")) {
+                } else if (op.equals("PRN")){
                     SymbolData rval = st.get(st.getById(operands.remove(0).cod - rpn.offset));
-                    asm += "     invoke MessageBox, NULL, addr CONSTANT"
-                            + rval.getId() + ", addr CONSTANT" + rval.getId() + ", MB_OK\n";
-                } else if (op.equals("JMP")) {
-                    asm += "jmp ";
+                    asm += "mov dx,OFFSET CONSTANT"+rval.getId()+"\n"+
+                            "mov ah,9\n"+
+                            "int 21h\n";
+                } else if (op.equals("CMP")){
                     while (!operands.isEmpty()) {
-                        asm += operands.remove(0);
+                        String k = SymbolsTable.get().getById(
+                                operands.remove(0).cod
+                                - ReversePolishNotation.offset);
+                        SymbolData src = SymbolsTable.get().get(k);
+                        String id = src.isConstant() ? "CONSTANT" + src.getId() : k;
+                        asm += "    push " + id + "\n";
+                        pushedTypes.add(src.getType());
                     }
-                    asm += "\n";
-
-                } else if (op.equals("JIF")) {
-                    asm += "jif ";
-                    while (!operands.isEmpty()) {
-                        asm += operands.remove(0);
+                    DataType tb = pushedTypes.remove(0);
+                    asm += "    pop ebx\n";
+                    DataType ta = pushedTypes.remove(0);
+                    asm += "    pop eax\n";
+                    if(ta == DataType.INT && tb == DataType.INT){
+                        asm += "    cmp eax,ebx\n";
+                    }else{
+                        asm +="    mov fperon,ebx; resta float \n"
+                                + (tb == DataType.FLOAT
+                                ? "    fld fperon\n"
+                                : "    fild fperon\n")
+                                + "    mov fperon,eax\n"
+                                + (tb == DataType.FLOAT
+                                ? "    fld fperon\n"
+                                : "    fild fperon\n")
+                                + "    fcompp\n"
+                                + "    ¿y ahora?";
                     }
-                    asm += "\n";
-
+                } else if (op.equals("LBL")) {
+                    asm += "_"+p.label+":\n";
+                } else if (op.equals("JEQ")){
+                    PolishItem pi = operands.remove(0);
+                    asm += "    je _"+pi.label+"\n";
+                }else if (op.equals("JNE")) {
+                    PolishItem pi = operands.remove(0);
+                    asm += "    jne _"+pi.label+"\n";
+                } else if (op.equals("JLT")) {
+                    PolishItem pi = operands.remove(0);
+                    asm += "    jb _"+pi.label+"\n";
+                } else if (op.equals("JGT")) {
+                    PolishItem pi = operands.remove(0);
+                    asm += "    jg _"+pi.label+"\n";
+                } else if (op.equals("JLE")) {
+                    PolishItem pi = operands.remove(0);
+                    asm += "    jbe _"+pi.label+"\n";
+                } else if (op.equals("JGE")) {
+                    PolishItem pi = operands.remove(0);
+                    asm += "    jge _"+pi.label+"\n";
                 }
-                code += asm;
             }
+            code += asm;
+         //   System.out.print(asm);
         }
-        code += "    invoke ExitProcess, 0\n"
-                + "end main\n";
+        code += "mov ah,4ch\n"
+                + "mov al,0\n"
+                + "int 21h\n"
+                + "end main\n"
+                + "zeroDiv:\n"
+                + "mov dx,OFFSET zeroDivError\n"
+                + "mov ah,9\n"
+                + "int 21h\n"
+                + "mov ah,4ch\n"
+                + "mov al,0\n"
+                + "int 21h\n"
+                + "end \n"
+                + "sumOver:\n"
+                + "mov dx,OFFSET sumOverError\n"
+                + "mov ah,9\n"
+                + "int 21h\n"
+                + "mov ah,4ch\n"
+                + "mov al,0\n"
+                + "int 21h\n"
+                + "end \n";
 
-        return head + data + code;
+        return stack + data + code;
     }
+
 }
