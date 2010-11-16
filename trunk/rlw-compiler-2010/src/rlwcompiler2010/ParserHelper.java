@@ -34,7 +34,7 @@ public class ParserHelper {
 
     private Vector<String> idBuf;
 
-    private boolean failed = false;
+    public boolean failed = false;
 
     private ParserHelper() {
         idBuf = new Vector<String>();

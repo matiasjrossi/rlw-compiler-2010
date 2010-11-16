@@ -169,7 +169,7 @@ public class Rlwic2asm {
                     }
                     DataType tb = pushedTypes.remove(0);
                     asm += "    pop ebx\n"
-                            + "    comp ebx,0\n"
+                            + "    cmp ebx,0\n"
                             + "    je _zeroDiv\n";
                     DataType ta = pushedTypes.remove(0);
                     asm += "    pop eax\n";
@@ -291,9 +291,9 @@ public class Rlwic2asm {
                     DataType ta = pushedTypes.remove(0);
                     asm += "    pop eax\n";
                     if(ta == DataType.INT && tb == DataType.INT){
-                        asm += "    cmp eax,ebx; comp int\n";
+                        asm += "    cmp eax,eax; comp int\n";
                     }else{
-                        asm +="    mov fperon,eax; comp float \n"
+                        asm +="    mov fperon,ebx; comp float \n"
                                 + (ta == DataType.FLOAT
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")

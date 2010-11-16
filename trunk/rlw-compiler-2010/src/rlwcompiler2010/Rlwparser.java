@@ -19,6 +19,7 @@ public class Rlwparser extends Parser {
 
     @Override
     public void syntax_error(Symbol errorToken) {
+        ParserHelper.get().failed = true;
         Logger.get().logDebug("Rlwparser", "call to syntax_error(" + errorToken.toString() + ")");
         
         if (SymbolsHelper.needToSpecify(errorToken.sym))
