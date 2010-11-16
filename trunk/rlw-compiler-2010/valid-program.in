@@ -1,10 +1,15 @@
-float foo, bar;
-
-foo :- 0 / 0;
-bar :-0;
-
-if (10.0 <= 10.0)
-   print("this is RIGHT");
+if(2.00 = 2.0)
+	print("ok");
 else
-   print("this is WRONG");
+	print("d'ou");
+if(2 = 2.0)
+	print("ok");
+else
+	print("d'ou");
+
+if(2.0 = 10.0/5 -8*0)
+	print("ok");
+else
+	print("d'ou");
+
 
