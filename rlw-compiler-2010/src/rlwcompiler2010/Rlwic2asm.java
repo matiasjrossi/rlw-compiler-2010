@@ -30,21 +30,16 @@ public class Rlwic2asm {
     }
 
     private String makeASM(){
-        String head = ".386\n"
-                + ".model flat, stdcall\n"
-                + "option casemap :none\n"
-                + "include \\masm32\\include\\windows.inc\n"
-                + "include \\masm32\\include\\kernel32.inc\n"
-                + "include \\masm32\\include\\user32.inc\n"
-                + "includelib \\masm32\\lib\\kernel32.lib\n"
-                + "includelib \\masm32\\lib\\user32.lib\n";
         String stack =
+                "\n\n\n"+
                 ".model small\n"+
+                ".586\n"+
                 ".stack 100h\n";
         String data = ".data\n"
-                + "    fperon ds 4\n"
+                + "    fperon dd ?\n"
+                + "    evita16 dw ?\n"
                 + "    sumOverError db 'Error! Overflow en una suma$'\n"
-                + "    sumOverError db 'Error! Intento de division por 0$'\n";
+                + "    zeroDivError db 'Error! Intento de division por 0$'\n";
         SymbolsTable st = SymbolsTable.get();
         for (String key : st.keySet()) {
             SymbolData sdata = st.get(key);
@@ -54,7 +49,7 @@ public class Rlwic2asm {
                         " db '"+key.trim().substring(1,key.length()-1)+"$'"
                             :"dd "+key )+ "\n";
             } else {
-                data += "    "+key + " ds 4\n";
+                data += "    "+key + " dd ?\n";
             }
         }
 
@@ -146,7 +141,7 @@ public class Rlwic2asm {
                                 + "    push eax\n";
                         pushedTypes.add(DataType.FLOAT);
                     } else {
-                        asm += "    imul eax,ebx;mult entera\n"
+                        asm += "     imul ebx;mult entera\n"
                                +"    push eax\n";
                         pushedTypes.add(DataType.INT);
                     }
@@ -221,7 +216,7 @@ public class Rlwic2asm {
                     } else {
                         asm += "    mov fperon,ebx ; resta entera\n"
                                 + "    mov edx,0\n"
-                                + "    isub eax,ebx\n"
+                                + "    sub eax,ebx\n"
                                 + "    push eax\n";
                         pushedTypes.add(DataType.INT);
                     }
@@ -294,9 +289,9 @@ public class Rlwic2asm {
                                 ? "    fld fperon\n"
                                 : "    fild fperon\n")
                                 + "    fcompp\n"
-                                + "    fstsw fperon\n"
+                                + "    fstsw evita16\n"
                                 + "    fwait\n"
-                                + "    mov ax,fperon\n"
+                                + "    mov ax,evita16\n"
                                 + "    sahf";
                     }
                 } else if (op.equals("LBL")) {
@@ -327,23 +322,23 @@ public class Rlwic2asm {
         code += "    mov ah,4ch\n"
                 + "    mov al,0\n"
                 + "    int 21h\n"
-                + "end main\n"
+
                 + "zeroDiv:\n"
-                + "mov dx,OFFSET zeroDivError\n"
-                + "mov ah,9\n"
-                + "int 21h\n"
-                + "mov ah,4ch\n"
-                + "mov al,0\n"
-                + "int 21h\n"
-                + "end \n"
+                + "    mov dx,OFFSET zeroDivError\n"
+                + "    mov ah,9\n"
+                + "    int 21h\n"
+                + "    mov ah,4ch\n"
+                + "    mov al,0\n"
+                + "    int 21h\n"
+
                 + "sumOver:\n"
-                + "mov dx,OFFSET sumOverError\n"
-                + "mov ah,9\n"
-                + "int 21h\n"
-                + "mov ah,4ch\n"
-                + "mov al,0\n"
-                + "int 21h\n"
-                + "end \n";
+                + "    mov dx,OFFSET sumOverError\n"
+                + "    mov ah,9\n"
+                + "    int 21h\n"
+                + "    mov ah,4ch\n"
+                + "    mov al,0\n"
+                + "    int 21h\n"
+                + "end main\n";
 
         return stack + data + code;
     }
