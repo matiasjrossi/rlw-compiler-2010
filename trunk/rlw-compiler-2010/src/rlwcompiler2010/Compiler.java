@@ -5,6 +5,13 @@
 
 package rlwcompiler2010;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Vector;
+
 /**
  *
  * @author cristian
@@ -51,7 +58,11 @@ public class Compiler {
             }
             System.out.println("\n\n\n\n" + SymbolsTable.get().toString());
             System.out.println(ReversePolishNotation.get().toString());
-            System.out.println(Rlwic2asm.get().getASM());
+            try {
+                new BufferedWriter(new FileWriter("output.asm")).write(Rlwic2asm.get().getASM());
+            } catch (IOException ex) {
+                System.err.println("Cannot write file to 'output.asm'. Obtained " + ex.getStackTrace().toString());
+            }
         }
        
     }
