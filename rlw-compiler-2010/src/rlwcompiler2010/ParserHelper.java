@@ -63,13 +63,18 @@ public class ParserHelper {
         try{
             Rlwic2asm.get().makeASM();
         }catch(Exception e){
-            System.out.println("Excepcion cacheteada " + e);
-            e.printStackTrace();
+            Logger.get().logDebug("ParserHelper", "Exception from ASM generator catched: " + e);
+            Logger.get().logDebug("ParserHelper", e.getStackTrace().toString());
         }
     }
 
     public void declaration(String type) {
         for (String id: idBuf) {
+            if (SymbolsTable.get().containsKey(mangled(id))) {
+                failed  = true;
+                Logger.get().logOutput("ERROR: Symbol '" + id + "' already declared in local scope.");
+                break;
+            }
             //Mangling
             SymbolsTable.get().put(mangled(id), new SymbolData());
             //Type
@@ -181,10 +186,32 @@ public class ParserHelper {
         identifier(id);
         declaration("int");
         operand(idexp);
+        try {
+            if (SymbolsTable.get().get(SymbolsTable.get().getById(ReversePolishNotation.get().getStrip().getLast().cod - ReversePolishNotation.offset)).getType() != SymbolData.DataType.INT) {                Logger.get().logOutput("ERROR: Non-integer initialization argument in FOR construct.");
+                Logger.get().logOutput("ERROR: Non-integer initialization argument in FOR construct.");
+                failed = true;
+            }
+        } catch (Exception e) {
+            failed = true;
+            Logger.get().logDebug("ParserHelper", "Non-symbol in RPN before loopStart(id) call.");
+            Logger.get().logDebug("ParserHelper", e.getStackTrace().toString());
+        }
+
         assignTo(id);
     }
 
     public void loopStart(String id) {
+        try {
+            if (SymbolsTable.get().get(SymbolsTable.get().getById(ReversePolishNotation.get().getStrip().getLast().cod - ReversePolishNotation.offset)).getType() != SymbolData.DataType.INT) {
+                Logger.get().logOutput("ERROR: Non-integer initialization argument in FOR construct.");
+                failed = true;
+            }
+        } catch (Exception e) {
+            failed = true;
+            Logger.get().logDebug("ParserHelper", "Non-symbol in RPN before loopStart(id) call.");
+            Logger.get().logDebug("ParserHelper", e.getStackTrace().toString());
+        }
+
         forCounterStack.push(id);
         identifier(id);
         declaration("int");
@@ -194,7 +221,15 @@ public class ParserHelper {
     public void loopCheck(String id, String cmp, String idexp) {
         ReversePolishNotation.get().labelCode("loopCheck_" + forStack.peek().toString());
         operand(id);
+        if (SymbolsTable.get().get(SymbolsTable.get().getById(ReversePolishNotation.get().getStrip().getLast().cod - ReversePolishNotation.offset)).getType() != SymbolData.DataType.INT) {
+            Logger.get().logOutput("ERROR: Non-integer argument in FOR loop condition.");
+            failed = true;
+        }
         operand(idexp);
+        if (SymbolsTable.get().get(SymbolsTable.get().getById(ReversePolishNotation.get().getStrip().getLast().cod - ReversePolishNotation.offset)).getType() != SymbolData.DataType.INT) {
+            Logger.get().logOutput("ERROR: Non-integer argument in FOR loop condition.");
+            failed = true;
+        }
         operator("CMP");
         ReversePolishNotation.get().addLabel("loopEnd_" + forStack.peek().toString());
 
@@ -208,8 +243,24 @@ public class ParserHelper {
     }
 
     public void loopCheck(String id, String cmp) {
+        try {
+            if (SymbolsTable.get().get(SymbolsTable.get().getById(ReversePolishNotation.get().getStrip().getLast().cod - ReversePolishNotation.offset)).getType() != SymbolData.DataType.INT) {
+                Logger.get().logOutput("ERROR: Non-integer initialization argument in FOR construct.");
+                failed = true;
+            }
+        } catch (Exception e) {
+            failed = true;
+            Logger.get().logDebug("ParserHelper", "Non-symbol in RPN before loopCheck(id,cmp) call.");
+            Logger.get().logDebug("ParserHelper", e.getStackTrace().toString());
+        }
+
         ReversePolishNotation.get().labelCode("loopCheck_" + forStack.peek().toString());
         operand(id);
+        if (SymbolsTable.get().get(SymbolsTable.get().getById(ReversePolishNotation.get().getStrip().getLast().cod - ReversePolishNotation.offset)).getType() != SymbolData.DataType.INT) {
+            Logger.get().logOutput("ERROR: Non-integer argument in FOR loop condition.");
+            failed = true;
+        }
+
         operator("CMP");
         ReversePolishNotation.get().addLabel("loopEnd_" + forStack.peek().toString());
 
@@ -246,6 +297,11 @@ public class ParserHelper {
     public void endFor() {
         operand(forCounterStack.peek());
         operand(forIncrementStack.pop());
+        if (SymbolsTable.get().get(SymbolsTable.get().getById(ReversePolishNotation.get().getStrip().getLast().cod - ReversePolishNotation.offset)).getType() != SymbolData.DataType.INT) {
+            Logger.get().logOutput("ERROR: Non-integer increment in FOR construct.");
+            failed = true;
+        }
+
         operator("ADD");
         operand(forCounterStack.pop());
         operator("ASS");
