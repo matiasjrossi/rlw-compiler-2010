@@ -32,7 +32,6 @@ public class Rlwic2asm {
 
     public void makeASM() throws SemanticErrorException{
         String stack =
-                "\n\n\n"+
                 ".model small\n"+
                 ".586\n"+
                 ".stack 100h\n";
