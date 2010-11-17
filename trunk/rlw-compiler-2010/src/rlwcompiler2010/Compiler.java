@@ -59,7 +59,10 @@ public class Compiler {
             System.out.println("\n\n\n\n" + SymbolsTable.get().toString());
             System.out.println(ReversePolishNotation.get().toString());
             try {
-                new BufferedWriter(new FileWriter("output.asm")).write(Rlwic2asm.get().getASM());
+                FileWriter fw = new FileWriter("output.asm");
+                fw.write(Rlwic2asm.get().getASM());
+                fw.close();
+                //BufferedWriter bf = new BufferedWriter().write(Rlwic2asm.get().getASM());
             } catch (IOException ex) {
                 System.err.println("Cannot write file to 'output.asm'. Obtained " + ex.getStackTrace().toString());
             }
