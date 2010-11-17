@@ -62,7 +62,6 @@ public class Compiler {
                 FileWriter fw = new FileWriter("output.asm");
                 fw.write(Rlwic2asm.get().getASM());
                 fw.close();
-                //BufferedWriter bf = new BufferedWriter().write(Rlwic2asm.get().getASM());
             } catch (IOException ex) {
                 System.err.println("Cannot write file to 'output.asm'. Obtained " + ex.getStackTrace().toString());
             }
