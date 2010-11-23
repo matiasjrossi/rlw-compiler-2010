@@ -1,6 +1,3 @@
-
-
-
 .model small
 .586
 .stack 100h

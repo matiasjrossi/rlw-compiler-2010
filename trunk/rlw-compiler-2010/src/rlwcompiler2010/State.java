@@ -5,6 +5,7 @@
 package rlwcompiler2010;
 
 import java.util.Hashtable;
+import java_cup.Lexer;
 
 /**
  *
@@ -23,8 +24,9 @@ public class State {
     public Token getToken(String s) {
         //get a string and gen a token
         //imprime errores de construccion del put token
-        if(tokenizer==null)
+        if (tokenizer == null) {
             return null;
+        }
         return tokenizer.build(s);
     }
 
@@ -36,6 +38,12 @@ public class State {
         String input = String.valueOf(c);
         for (String s : trans.keySet()) {
             if (input.matches(s)) {
+                if (String.valueOf(c).matches("(\\r\\n|\\n)")) {
+                    Rlwlexer.getLexer().newLine();
+                } else {
+                    Rlwlexer.getLexer().incIndex();
+                }
+
                 return trans.get(s);
             }
         }
