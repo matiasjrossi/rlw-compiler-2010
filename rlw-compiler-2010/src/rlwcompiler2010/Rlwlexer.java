@@ -25,8 +25,7 @@ public class Rlwlexer implements Scanner {
     private State state; // current state
     private State s0,// initial state
             blanks,comment;
-    private Vector<Token> tokenStrip;
-    private FileReader fr;
+     private FileReader fr;
     private BufferedReader br;
     private static Rlwlexer lexer = null;
 
@@ -41,8 +40,7 @@ public class Rlwlexer implements Scanner {
     private Rlwlexer(String filePath) throws Exception {
         Logger.get().logDebug("Lexer", "Trying to open file \"" + filePath + "\"");
         this.filePath = filePath;
-        tokenStrip = new Vector<Token>();
-
+ 
         fr = new FileReader(filePath);
         br = new BufferedReader(fr);
 
@@ -171,32 +169,20 @@ public class Rlwlexer implements Scanner {
         Token t = null;
 
         while (t == null) {
-            char c = ' ';
-            int i = 0;
-            try {
-                i = br.read();
-                if (i < 0) {
-                    //EOF
+            //**** OBTENER NUEVO CARACTER
+            Character c = nextChar();
+            if (c == null) {
                     t = makeToken(strip);
                     strip = "";
                     return t;
-                }
-                c = (char) i;
-            } catch (Exception e) {
-                System.out.println("WTF???? i:" + i + " c:" + c + " e:" + e);
-                //Corte de emergencia
-                t = makeToken(strip);
-                strip = "";
-                return t;
             }
-
+            //**** CALCULAR PROXIMO ESTADO
             State ns = state.next(c);
             if (ns != null) { // si tengo transicion, todo va bien
                 strip += c;
                 state = ns;
             } else {// si no tengo prox estado es final (valido/ERROR)
                 t = makeToken(strip);
-                //corregir strip pa que salga andando
                 // el char actual es el que no valida con el estado acutal
                 // forma parte del proximo token
                 strip = String.valueOf(c);
@@ -210,15 +196,16 @@ public class Rlwlexer implements Scanner {
                     strip = "";
                 }
             }
-            // corregir index
-            if (String.valueOf(c).matches("(\\r\\n|\\n)")) {
-                l++;
-                index = 1;
-            } else {
-                index++;
-            }
         }
         return t;
+    }
+
+    public void newLine(){
+        l++;
+        index = 1;
+    }
+    public void incIndex(){
+        index++;
     }
 
     public int getCurrentLine() {
@@ -260,9 +247,21 @@ public class Rlwlexer implements Scanner {
             }
              *
              */
-            tokenStrip.add(t);
         }
         return t;
+    }
+
+    private Character nextChar() {
+        Character c = null;
+        int i = 0;
+            try {
+                i = br.read();
+                if (i >= 0)
+                c = (char) i;
+            } catch (Exception e) {
+                System.out.println("WTF???? i:" + i + " c:" + c + " e:" + e);
+            }
+        return c;
     }
 
 }
